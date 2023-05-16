@@ -142,8 +142,8 @@ export const FAQ = () => (
             {
                 questionAndAnswers.map((qa, index) => {
                     return (
-                        <Stack>
-                            <Accordion key={index}>
+                        <Stack key={index}>
+                            <Accordion>
                                 <AccordionItem>
                                     <h2>
                                     <AccordionButton _expanded={{ bg: 'tomato', color: 'white' }}>
