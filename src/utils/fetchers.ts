@@ -1,12 +1,12 @@
+import { CeremonyState, commonTerms, getCeremonyCircuits, getCircuitsCollectionPath, getDocumentById } from "@p0tion/actions"
 import { MACI_CEREMONY_ID } from "./constants"
 import { userFirestore, userFunctions } from "./firebase"
-// import { getCeremonyCircuits, getDocumentById } from "@p0tion/actions"
 
 export const getAllCircuits = async () => {
-    // const circuits = getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
-    // console.log(circuits)
-    // return circuits
-    return ""
+    const circuits = getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+    console.log(circuits)
+    return circuits
+    // return ""
 }
 
 /**
@@ -15,6 +15,25 @@ export const getAllCircuits = async () => {
  * @returns <Number> - the number of users in the waiting queue.
  */
 export const getUsersInWaitingQueue = async (circuitId: string): Promise<number> => {
+    // const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    // const circuitData = circuit.data()
+    // if (!circuitData) return 0
+    // const { waitingQueue } = circuitData
+    return 0 
+}
+
+/**
+ * Retrieve the number of users that failed to contribute to a circuit.
+ * @param circuitId <string> - the id of the circuit
+ * @returns <Number> - the number of users that have failed to contribute to the circuit.
+ */
+export const getFailedContributors = async (circuitId: string): Promise<number> => {
+    // const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    // const circuitData = circuit.data()
+    // if (!circuitData) return 0
+
+    // const { waitingQueue } = circuitData
+    // return waitingQueue.contributors.failedContributions
     return 0 
 }
 
@@ -24,6 +43,12 @@ export const getUsersInWaitingQueue = async (circuitId: string): Promise<number>
  * @returns <Number> - the number of users that contributed to the circuit.
  */
 export const getCircuitContributors = async (circuitId: string): Promise<number> => {
+    // const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    // const circuitData = circuit.data()
+    // if (!circuitData) return 0
+
+    // const { waitingQueue } = circuitData
+    // return waitingQueue.completedContributions
     return 0
 }
 
@@ -82,6 +107,11 @@ export const getCurrentContributor = async (): Promise<string> => {
  * @returns <boolean> - whether the ceremony is active or not.
  */
 export const getCeremonyState = async (): Promise<boolean> => {
-    return false;
+    // const ceremony = await getDocumentById(userFirestore, commonTerms.collections.ceremonies.name, MACI_CEREMONY_ID)
+    // const ceremonyData = ceremony.data()
+    // if (!ceremonyData) return false
+
+    // if (ceremonyData.state === CeremonyState.OPENED) return true 
+    return false
 }
 

@@ -19,10 +19,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "experimentalDecorators": true,
-    "paths": {
-      "@p0tion/actions": ["./src/p0tion__actions.d.ts"]
-    }
+    "experimentalDecorators": true
   },
   "include": [
     "src"

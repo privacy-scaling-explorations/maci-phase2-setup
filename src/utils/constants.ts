@@ -1,1 +1,1 @@
-export const MACI_CEREMONY_ID = process.env.REACT_APP_CEREMONY_ID
+export const MACI_CEREMONY_ID = process.env.REACT_APP_CEREMONY_ID!
