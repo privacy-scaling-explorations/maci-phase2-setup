@@ -1,7 +1,6 @@
 import { FirebaseApp, initializeApp } from "firebase/app"
 import { Firestore, getFirestore } from "firebase/firestore"
 import { Functions, getFunctions } from "firebase/functions"
-import { getAuth } from "firebase/auth"
 
 /**
  * Initialize and return the Firebase app and services.
@@ -22,7 +21,6 @@ export const initializeUserServices = (): {
     })
 
     // Init services.
-    const auth = getAuth(userApp)
     const userFirestore = getFirestore(userApp)
     const userFunctions = getFunctions(userApp)
 

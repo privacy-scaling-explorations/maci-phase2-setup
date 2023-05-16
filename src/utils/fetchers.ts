@@ -1,12 +1,12 @@
-import { CeremonyState, commonTerms, getCeremonyCircuits, getCircuitsCollectionPath, getDocumentById } from "@p0tion/actions"
+// import { CeremonyState, commonTerms, getCeremonyCircuits, getCircuitsCollectionPath, getDocumentById } from "@p0tion/actions"
 import { MACI_CEREMONY_ID } from "./constants"
-import { userFirestore, userFunctions } from "./firebase"
+import { userFirestore } from "./firebase"
 
 export const getAllCircuits = async () => {
-    const circuits = getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
-    console.log(circuits)
-    return circuits
-    // return ""
+    // const circuits = getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+    // console.log(circuits)
+    // return circuits
+    return ""
 }
 
 /**
