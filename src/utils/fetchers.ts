@@ -1,10 +1,20 @@
-import { userFunctions } from "./firebase"
+import { MACI_CEREMONY_ID } from "./constants"
+import { userFirestore, userFunctions } from "./firebase"
+// import { getCeremonyCircuits, getDocumentById } from "@p0tion/actions"
+
+export const getAllCircuits = async () => {
+    // const circuits = getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+    // console.log(circuits)
+    // return circuits
+    return ""
+}
 
 /**
  * Retrieve the number of users in the waiting queue.
+ * @param circuitId <string> - the id of the circuit
  * @returns <Number> - the number of users in the waiting queue.
  */
-export const getUsersInWaitingQueue = async (): Promise<number> => {
+export const getUsersInWaitingQueue = async (circuitId: string): Promise<number> => {
     return 0 
 }
 
@@ -74,3 +84,4 @@ export const getCurrentContributor = async (): Promise<string> => {
 export const getCeremonyState = async (): Promise<boolean> => {
     return false;
 }
+
