@@ -1,6 +1,6 @@
 import { Stack, Text, Box, Button, Tag, Circle } from '@chakra-ui/react'
 import { MaciBlack, MaciLightYellow, MaciWhite } from '../utils/colors'
-import { getAllCircuitsInfo, getCeremonyState } from '../utils/fetchers'
+import { getAllCircuitsInfo, getCeremonyState, getVerificationTranscript } from '../utils/fetchers'
 import { useEffect, useState } from 'react'
 import { ICircuit } from '../utils/interfaces'
 
@@ -11,6 +11,11 @@ export const Home = () => {
 	const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
 
 	useEffect(() => {
+		const _getTranscript = async () => {
+			await getVerificationTranscript("00001", false, "u6MzqGMsJuVDQVp9r0Jv")
+
+		}
+
 		const _checkCeremonyState = async () => {
 			const state = await getCeremonyState()
 			setIsCeremonyOngoing(state)
@@ -29,6 +34,7 @@ export const Home = () => {
 		_getCircuitsData().catch()
 		_checkCeremonyState().catch()
 		_getTotalContributions().catch()
+		_getTranscript().catch()
 	}, [])
 
 

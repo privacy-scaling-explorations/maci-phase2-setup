@@ -1,6 +1,8 @@
-import { MACI_CEREMONY_ID } from "./constants"
-import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollectionPath } from "./firebase"
-import { ICircuit } from "./interfaces"
+import { MACI_CEREMONY_ID, bucketUrl } from "./constants"
+import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollectionPath, getContributionsCollectionPath, getCircuitContributionsFromContributor, queryCollection, fromQueryToFirebaseDocumentInfo } from "./firebase"
+import { ICircuit, ITranscript } from "./interfaces"
+import { where } from "firebase/firestore"
+import axios from "axios"
 
 /**
  * Get all circuits info for a ceremony
@@ -41,7 +43,7 @@ export const getUsersInWaitingQueue = async (circuitId: string): Promise<number>
     const circuitData = circuit.data()
     if (!circuitData) return 0
     const { waitingQueue } = circuitData
-    return 0 
+    return waitingQueue.contributors.length ? waitingQueue.contributors.length : 0
 }
 
 /**
@@ -113,22 +115,73 @@ export const getDiskSpaceRequired = async (circuitId: string): Promise<number> =
     return zKeySizeInBytes
 }
 
+
 /**
  * Retreive a verification transcript
  * @param identifier - the identifier of the transcript
  * @param byId - whether the identifier is an id or a index
+ * @param circuitId - the id of the circuit
  * @returns <string> - the particular verification transcript.
  */
-export const getVerificationTranscript = async (identifier: string, byId: boolean): Promise<string> => {
-    return ""
-}
+export const getVerificationTranscript = async (
+    identifier: string, 
+    byId: boolean, 
+    circuitId: string
+): Promise<ITranscript[]> => {
+    // we keep an array because a coordinator will have 2 transcripts
+    const transcripts: ITranscript[] = []
+    // if looking by id, we need to find which zkey has the user contributed to 
+    if (byId) {
+        const contributions = await getCircuitContributionsFromContributor(
+            userFirestore,
+            MACI_CEREMONY_ID,
+            circuitId,
+            identifier
+        )
 
-/**
- * Get all verification transcripts
- * @returns <string[]> - all of the verification transcripts
- */
-export const getAllVerificationTranscripts = async (): Promise<string[]> => {
-    return []
+        for (const contribution of contributions) {
+            const contributionData = contribution.data
+            const transcriptStoragePath = contributionData.files.transcriptStoragePath
+            const url = `${bucketUrl}/${transcriptStoragePath}`
+
+            let content = ""
+            const resp = await axios.get(url)
+            if (resp.status === 200) content = resp.data
+
+            const transcript: ITranscript = {
+                contributorId: identifier,
+                zKeyIndex: contributionData.zkeyIndex,
+                url: url,
+                content: content
+            }
+
+            transcripts.push(transcript)
+        }
+
+        return transcripts 
+    }
+   
+    const doc = await queryCollection(userFirestore, getContributionsCollectionPath(MACI_CEREMONY_ID, circuitId), [where("zkeyIndex", "==", identifier)])
+
+    if (!doc) return transcripts
+
+    const contribution = fromQueryToFirebaseDocumentInfo(doc.docs).at(0)
+
+    const url = `${bucketUrl}/${contribution.data.files.transcriptStoragePath}`
+
+    let content = ""
+    const resp = await axios.get(url)
+    if (resp.status === 200) content = resp.data
+
+    const transcript: ITranscript = {
+        contributorId: contribution.data.participantId,
+        zKeyIndex: identifier,
+        url: url,
+        content: content
+    }
+
+    transcripts.push(transcript)
+    return transcripts 
 }
 
 /**

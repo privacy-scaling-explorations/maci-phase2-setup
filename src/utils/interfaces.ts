@@ -8,3 +8,10 @@ export interface ICircuit {
     diskSpaceRequired: number
     currentContributor: string
 }
+
+export interface ITranscript {
+    contributorId: string 
+    zKeyIndex: string
+    url: string 
+    content: string 
+}

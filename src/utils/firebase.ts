@@ -13,7 +13,6 @@ import {
     QueryConstraint,
     QueryDocumentSnapshot,
     QuerySnapshot,
-    Timestamp,
     where
 } from "firebase/firestore"
 
@@ -99,8 +98,74 @@ export const fromQueryToFirebaseDocumentInfo = (
  * @returns <string> - the participants collection path.
  */
 export const getCircuitsCollectionPath = (ceremonyId: string): string =>
-`${"ceremonies"}/${ceremonyId}/${"circuits"}`
+`ceremonies/${ceremonyId}/circuits`
 
+/**
+ * Get contributions collection path for database reference.
+ * @notice all contributions related documents are store under `ceremonies/<ceremonyId>/circuits/<circuitId>/contributions` collection path.
+ * nb. This is a rule that must be satisfied. This is NOT an optional convention.
+ * @param ceremonyId <string> - the unique identifier of the ceremony.
+ * @param circuitId <string> - the unique identifier of the circuit.
+ * @returns <string> - the contributions collection path.
+ */
+export const getContributionsCollectionPath = (ceremonyId: string, circuitId: string): string =>
+    `${getCircuitsCollectionPath(ceremonyId)}/${circuitId}/contributions`
+
+/**
+ * Get participants collection path for database reference.
+ * @notice all participants related documents are store under `ceremonies/<ceremonyId>/participants` collection path.
+ * nb. This is a rule that must be satisfied. This is NOT an optional convention.
+ * @param ceremonyId <string> - the unique identifier of the ceremony.
+ * @returns <string> - the participants collection path.
+ */
+export const getParticipantsCollectionPath = (ceremonyId: string): string =>
+`ceremonies/${ceremonyId}/participants`
+
+
+/**
+ * Helper for query a collection based on certain constraints.
+ * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
+ * @param collection <string> - the name of the collection.
+ * @param queryConstraints <Array<QueryConstraint>> - a sequence of where conditions.
+ * @returns <Promise<QuerySnapshot<DocumentData>>> - return the matching documents (if any).
+ */
+export const queryCollection = async (
+    firestoreDatabase: Firestore,
+    collection: string,
+    queryConstraints: Array<QueryConstraint>
+): Promise<QuerySnapshot<DocumentData>> => {
+    // Make a query.
+    const q = query(collectionRef(firestoreDatabase, collection), ...queryConstraints)
+
+    // Get docs.
+    const snap = await getDocs(q)
+
+    return snap
+}
+
+/**
+ * Query for a specific ceremony' circuit contribution from a given contributor (if any).
+ * @notice if the caller is a coordinator, there could be more than one contribution (= the one from finalization applies to this criteria).
+ * @param firestoreDatabase <Firestore> - the Firestore service instance associated to the current Firebase application.
+ * @param ceremonyId <string> - the unique identifier of the ceremony.
+ * @param circuitId <string> - the unique identifier of the circuit.
+ * @param participantId <string> - the unique identifier of the participant.
+ * @returns <Promise<Array<FirebaseDocumentInfo>>> - the document info about the circuit contributions from contributor.
+ */
+export const getCircuitContributionsFromContributor = async (
+    firestoreDatabase: Firestore,
+    ceremonyId: string,
+    circuitId: string,
+    participantId: string
+): Promise<Array<any>> => {
+    const participantContributionsQuerySnap = await queryCollection(
+        firestoreDatabase,
+        getContributionsCollectionPath(ceremonyId, circuitId),
+        [where("participantId", "==", participantId)]
+    )
+
+    return fromQueryToFirebaseDocumentInfo(participantContributionsQuerySnap.docs)
+}
 
 /**
  * Query for ceremony circuits.
