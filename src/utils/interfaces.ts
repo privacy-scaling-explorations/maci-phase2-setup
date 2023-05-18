@@ -9,6 +9,14 @@ export interface ICircuit {
     currentContributor: string
 }
 
+export interface IAvgStats {
+    waitingQueue: number 
+    failedContributions: number
+    completedContributions: number
+    avgContributionTime: number
+    diskSpaceRequired: number
+}
+
 export interface ITranscript {
     contributorId: string 
     zKeyIndex: string

@@ -1,40 +1,40 @@
 import { Stack, Text, Box, Button, Tag, Circle } from '@chakra-ui/react'
 import { MaciBlack, MaciLightYellow, MaciWhite } from '../utils/colors'
-import { getAllCircuitsInfo, getCeremonyState, getVerificationTranscript } from '../utils/fetchers'
+import { getAverageData, getCeremonyState, getTotalNumberOfContributions } from '../utils/fetchers'
 import { useEffect, useState } from 'react'
-import { ICircuit } from '../utils/interfaces'
+import { IAvgStats } from '../utils/interfaces'
 
 export const Home = () => {
 
-	const [circuits, setCircuits] = useState<ICircuit[]>([])
+	const [averages, setAverages] = useState<IAvgStats>({
+		waitingQueue: 0, 
+		failedContributions: 0,
+		completedContributions: 0,
+		avgContributionTime: 0,
+		diskSpaceRequired: 0
+	})
 	const [totalContributions, setTotalContributions] = useState<number>(0)
 	const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
 
 	useEffect(() => {
-		const _getTranscript = async () => {
-			await getVerificationTranscript("00001", false, "u6MzqGMsJuVDQVp9r0Jv")
-
-		}
-
 		const _checkCeremonyState = async () => {
 			const state = await getCeremonyState()
 			setIsCeremonyOngoing(state)
 		}
 
-		const _getCircuitsData = async () => {
-			const data = await getAllCircuitsInfo()
-			setCircuits(data)
+		const _getAvgData = async () => {
+			const data = await getAverageData()
+			setAverages(data)
 		}
 
 		const _getTotalContributions = async () => {
-			const total = circuits.reduce((acc, curr) => acc + curr.completedContributions, 0)
+			const total = await getTotalNumberOfContributions()
 			setTotalContributions(total)
 		}
 
-		_getCircuitsData().catch()
+		_getAvgData().catch()
 		_checkCeremonyState().catch()
 		_getTotalContributions().catch()
-		_getTranscript().catch()
 	}, [])
 
 
@@ -573,248 +573,240 @@ export const Home = () => {
 					</Text>
 					</Stack>
 				</Stack>
-				{
-					circuits.map((circuit, index) => {
-						return (
-							<Stack
-							key={index}
-							justify="flex-start"
+				<Stack
+					justify="flex-start"
 							align="flex-start"
 							spacing="-1px"
 							alignSelf="stretch"
+					>
+						<Stack
+						direction="row"
+						justify="flex-start"
+						align="flex-start"
+						spacing="-1px"
+						alignSelf="stretch"
 						>
-							<Stack
-							direction="row"
-							justify="flex-start"
+						<Stack
+							padding="18px"
+							flex="1"
+							justify="center"
 							align="flex-start"
-							spacing="-1px"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
 							alignSelf="stretch"
 							>
-							<Stack
-								padding="18px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Current contributor
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.currentContributor}
-								</Text>
-							</Stack>
-							<Stack
-								padding="18px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Contributors
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.completedContributions}
-								</Text>
-							</Stack>
-							<Stack
-								padding="18px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Disc space required
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.diskSpaceRequired + ' mb'} 
-								</Text>
-							</Stack>
-							</Stack>
-							<Stack
-							direction="row"
-							justify="flex-start"
-							align="flex-start"
-							spacing="-1px"
+							Current contributor
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
 							alignSelf="stretch"
 							>
-							<Stack
-								padding="18px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Waiting to contribute
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.waitingQueue}
-								</Text>
-							</Stack>
-							<Stack
-								padding="18px"
-								height="106px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Avg contribution & verification time
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.avgContributionTime}
-								</Text>
-							</Stack>
-							<Stack
-								padding="18px"
-								flex="1"
-								justify="center"
-								align="flex-start"
-								spacing="18px"
-								borderColor={MaciBlack}
-								borderStartWidth="1px"
-								borderEndWidth="1px"
-								borderTopWidth="1px"
-								borderBottomWidth="1px"
-							>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.33"
-								fontWeight="regular"
-								fontSize="12px"
-								letterSpacing="0.02em"
-								color="Muted Colors.500"
-								alignSelf="stretch"
-								>
-								Failed contributions
-								</Text>
-								<Text
-								fontFamily="Aeonik"
-								lineHeight="1.29"
-								fontWeight="medium"
-								fontSize="28px"
-								letterSpacing="0.01em"
-								color={MaciBlack}
-								alignSelf="stretch"
-								>
-								{circuit.failedContributions}
-								</Text>
-							</Stack>
-							</Stack>
+							None
+							</Text>
 						</Stack>
-						)
-					})
-				}
-			
+						<Stack
+							padding="18px"
+							flex="1"
+							justify="center"
+							align="flex-start"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
+							alignSelf="stretch"
+							>
+							Contributors
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
+							alignSelf="stretch"
+							>
+							{averages.completedContributions}
+							</Text>
+						</Stack>
+						<Stack
+							padding="18px"
+							flex="1"
+							justify="center"
+							align="flex-start"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
+							alignSelf="stretch"
+							>
+							Disc space required
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
+							alignSelf="stretch"
+							>
+							{averages.diskSpaceRequired + ' mb'} 
+							</Text>
+						</Stack>
+						</Stack>
+						<Stack
+						direction="row"
+						justify="flex-start"
+						align="flex-start"
+						spacing="-1px"
+						alignSelf="stretch"
+						>
+						<Stack
+							padding="18px"
+							flex="1"
+							justify="center"
+							align="flex-start"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
+							alignSelf="stretch"
+							>
+							Waiting to contribute
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
+							alignSelf="stretch"
+							>
+							{averages.waitingQueue}
+							</Text>
+						</Stack>
+						<Stack
+							padding="18px"
+							height="106px"
+							flex="1"
+							justify="center"
+							align="flex-start"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
+							alignSelf="stretch"
+							>
+							Avg contribution & verification time
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
+							alignSelf="stretch"
+							>
+							{averages.avgContributionTime}
+							</Text>
+						</Stack>
+						<Stack
+							padding="18px"
+							flex="1"
+							justify="center"
+							align="flex-start"
+							spacing="18px"
+							borderColor={MaciBlack}
+							borderStartWidth="1px"
+							borderEndWidth="1px"
+							borderTopWidth="1px"
+							borderBottomWidth="1px"
+						>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.33"
+							fontWeight="regular"
+							fontSize="12px"
+							letterSpacing="0.02em"
+							color="Muted Colors.500"
+							alignSelf="stretch"
+							>
+							Failed contributions
+							</Text>
+							<Text
+							fontFamily="Aeonik"
+							lineHeight="1.29"
+							fontWeight="medium"
+							fontSize="28px"
+							letterSpacing="0.01em"
+							color={MaciBlack}
+							alignSelf="stretch"
+							>
+							{averages.failedContributions}
+							</Text>
+						</Stack>
+						</Stack>
+				</Stack>
 				</Stack>
 				<Stack justify="flex-start" align="flex-start" spacing="0px">
 				<Stack
