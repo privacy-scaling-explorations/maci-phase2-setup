@@ -46,7 +46,7 @@ export const FAQ = () => (
 			textAlign="left"
 			spacing="20px">
               <Text
-                fontFamily="Aeonik"
+                
                 lineHeight="0.99"
                 fontWeight="medium"
                 fontSize="48px"
@@ -58,7 +58,7 @@ export const FAQ = () => (
                 Have a question?
               </Text>
               <Text
-                fontFamily="Aeonik"
+                
                 lineHeight="1.56"
                 fontWeight="regular"
                 fontSize="18px"

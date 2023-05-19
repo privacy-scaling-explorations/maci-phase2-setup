@@ -4,7 +4,6 @@ import { Home } from './pages/home';
 import { Footer } from './components/footer/footer';
 import { BrowserRouter as Router, Routes,  Route } from 'react-router-dom';
 import { Documentation } from './pages/documentation';
-import { NavBar } from './components/navbar/navbar';
 
 function App(): React.JSX.Element {
   return (

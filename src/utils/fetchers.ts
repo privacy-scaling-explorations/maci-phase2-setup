@@ -13,7 +13,8 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
     const circuitInfo: ICircuit[] = []
     // find the info for each circuit
     for (const circuit of circuits) {
-        const { id, name } = circuit
+        const { id } = circuit
+        const { name } = circuit.data 
         const waitingQueue = await getUsersInWaitingQueue(id)
         const failedContributions = await getFailedContributions(id)
         const completedContributions = await getCircuitContributions(id)

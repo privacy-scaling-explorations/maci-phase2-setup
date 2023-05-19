@@ -54,7 +54,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 			>
 				<Link to={'/'}>
 					<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="black"
 					fontSize="16px"
@@ -81,7 +81,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 				background={MaciWhite}
 			>
 				<Text
-				fontFamily="Aeonik"
+				
 				lineHeight="1.25"
 				fontWeight="bold"
 				fontSize="16px"
@@ -114,7 +114,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 			>
 				<Link to={'/documentation'}>
 					<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="bold"
 					fontSize="16px"
@@ -126,7 +126,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 				</Link>
 				<Link to={'https://privacy-scaling-explorations.github.io/maci/'} target='_blank'>
 					<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="regular"
 					fontSize="16px"

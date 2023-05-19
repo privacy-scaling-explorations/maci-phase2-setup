@@ -1,15 +1,17 @@
-import { Stack, Text, Box, Button, Tag, Circle } from '@chakra-ui/react'
+import { Stack, Text, Box, Button, Circle } from '@chakra-ui/react'
 import { MaciBlack, MaciLightYellow, MaciWhite, MaciYellow } from '../utils/colors'
-import { getAverageData, getCeremonyState, getTotalNumberOfContributions } from '../utils/fetchers'
+import { getAllCircuitsInfo, getAverageData, getCeremonyState, getTotalNumberOfContributions } from '../utils/fetchers'
 import { useEffect, useState } from 'react'
-import { IAvgStats } from '../utils/interfaces'
+import { IAvgStats, ICircuit } from '../utils/interfaces'
 import { FAQ } from '../components/faq/faq'
 import WireRope from "../assets/ropeYellow.png"
+import WireRopeBackground from "../assets/wire-rope1.png"
 import { Link } from "react-router-dom"
 import Layer17 from "../assets/Layer_1-7.png"
 import SpriralGlassYellow from "../assets/Spiral_glass_yellow.png"
 import SpiralWire from "../assets/Isolation_Mode.png"
 import { NavBar } from '../components/navbar/navbar'
+import { VerificationTranscript } from '../components/verificationTrascripts/verificationTranscripts'
 
 export const Home = () => {
 
@@ -20,10 +22,16 @@ export const Home = () => {
 		avgContributionTime: 0,
 		diskSpaceRequired: 0
 	})
+	const [circuits, setCircuits] = useState<ICircuit[]>([])
 	const [totalContributions, setTotalContributions] = useState<number>(0)
 	const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
 
 	useEffect(() => {
+		const _getCircuits = async () => {
+			const circuits = await getAllCircuitsInfo()
+			setCircuits(circuits)
+		}
+
 		const _checkCeremonyState = async () => {
 			const state = await getCeremonyState()
 			setIsCeremonyOngoing(state)
@@ -39,6 +47,7 @@ export const Home = () => {
 			setTotalContributions(total)
 		}
 
+		_getCircuits().catch()
 		_getAvgData().catch()
 		_checkCeremonyState().catch()
 		_getTotalContributions().catch()
@@ -55,6 +64,9 @@ export const Home = () => {
 				width="100%"
 				height="100%"
 				paddingTop="5%"
+				backgroundImage={WireRopeBackground}
+				backgroundRepeat="no-repeat"
+				backgroundPosition="inherit"
 			>
 				<Stack
 				justify="flex-start"
@@ -92,7 +104,7 @@ export const Home = () => {
 						maxWidth="100%"
 					>
 						<Text
-						fontFamily="Aeonik"
+						
 						lineHeight="1.33"
 						fontWeight="bold"
 						fontSize="12px"
@@ -137,7 +149,7 @@ export const Home = () => {
 						>
 							<Stack width="67px" height="74px" />
 							<Text
-							fontFamily="Aeonik"
+							
 							lineHeight="0.99"
 							fontWeight="medium"
 							fontSize="48px"
@@ -173,7 +185,7 @@ export const Home = () => {
 							background={MaciWhite}
 							>
 							<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.56"
 								fontWeight="regular"
 								fontSize="18px"
@@ -210,7 +222,7 @@ export const Home = () => {
 								height="48px"
 								>
 								<Text
-									fontFamily="Aeonik"
+									
 									lineHeight="1.25"
 									fontWeight="bold"
 									fontSize="16px"
@@ -401,7 +413,7 @@ export const Home = () => {
 						textAlign="left"
 						>
 						<Text
-							fontFamily="Aeonik"
+							
 							lineHeight="1.27"
 							fontWeight="bold"
 							fontSize="22px"
@@ -418,7 +430,7 @@ export const Home = () => {
 							>
 							<Circle size="8px" background="#EF4444" marginRight="5%" />
 							<Text
-							fontFamily="Aeonik"
+							
 							lineHeight="1.33"
 							fontWeight="medium"
 							fontSize="12px"
@@ -439,7 +451,7 @@ export const Home = () => {
 						alignSelf="stretch"
 						>
 						<Text
-							fontFamily="Aeonik"
+							
 							lineHeight="0.79"
 							fontWeight="medium"
 							fontSize="60px"
@@ -449,7 +461,7 @@ export const Home = () => {
 							{totalContributions}
 						</Text>
 						<Text
-							fontFamily="Aeonik"
+							
 							lineHeight="1.25"
 							fontWeight="medium"
 							fontSize="16px"
@@ -485,7 +497,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -496,7 +508,7 @@ export const Home = () => {
 								Current contributor
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -519,7 +531,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -530,7 +542,7 @@ export const Home = () => {
 								Contributors
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -553,7 +565,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -564,7 +576,7 @@ export const Home = () => {
 								Disc space required
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -595,7 +607,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -606,7 +618,7 @@ export const Home = () => {
 								Waiting to contribute
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -630,7 +642,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -641,7 +653,7 @@ export const Home = () => {
 								Avg contribution & verification time
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -664,7 +676,7 @@ export const Home = () => {
 								textAlign="left"
 							>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.33"
 								fontWeight="regular"
 								fontSize="12px"
@@ -675,7 +687,7 @@ export const Home = () => {
 								Failed contributions
 								</Text>
 								<Text
-								fontFamily="Aeonik"
+								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
@@ -763,6 +775,7 @@ export const Home = () => {
 				</Stack>
 				</Stack>
 			</Stack>
+			<VerificationTranscript circuits={circuits} />
 			<FAQ />
 		</>
 	)

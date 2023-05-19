@@ -25,7 +25,7 @@ export const Footer = (): React.JSX.Element => (
         >
           <Stack justify="flex-start" align="flex-start" textAlign="left" spacing="20px">
             <Text
-              fontFamily="Aeonik"
+              
               lineHeight="1.27"
               fontWeight="black"
               fontSize="22px"
@@ -46,7 +46,7 @@ export const Footer = (): React.JSX.Element => (
               </Box>
             </Text>
             <Text
-              fontFamily="Aeonik"
+              
               lineHeight="1.27"
               fontWeight="medium"
               fontSize="22px"
@@ -67,7 +67,7 @@ export const Footer = (): React.JSX.Element => (
           >
             <Box>
               <Text
-                fontFamily="Aeonik"
+                
                 lineHeight="1.25"
                 fontWeight="bold"
                 fontSize="16px"
@@ -90,7 +90,7 @@ export const Footer = (): React.JSX.Element => (
             >
               <Box>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -100,7 +100,7 @@ export const Footer = (): React.JSX.Element => (
                   Your privacy
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -110,7 +110,7 @@ export const Footer = (): React.JSX.Element => (
                   Legal
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -122,7 +122,7 @@ export const Footer = (): React.JSX.Element => (
               </Box>
               <Box>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -132,7 +132,7 @@ export const Footer = (): React.JSX.Element => (
                   MACI Repo
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -142,7 +142,7 @@ export const Footer = (): React.JSX.Element => (
                   P0T10N Repo
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -154,7 +154,7 @@ export const Footer = (): React.JSX.Element => (
               </Box>
               <Box>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -164,7 +164,7 @@ export const Footer = (): React.JSX.Element => (
                   FAQ
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -174,7 +174,7 @@ export const Footer = (): React.JSX.Element => (
                   Documentation
                 </Text>
                 <Text
-                  fontFamily="Aeonik"
+                  
                   lineHeight="1.25"
                   fontWeight="regular"
                   fontSize="16px"
@@ -198,7 +198,7 @@ export const Footer = (): React.JSX.Element => (
         maxWidth="100%"
       >
         <Text
-          fontFamily="Aeonik"
+          
           lineHeight="1.25"
           fontWeight="medium"
           fontSize="16px"
@@ -245,7 +245,7 @@ export const Footer = (): React.JSX.Element => (
             spacing="10px"
           >
             <Text
-              fontFamily="Aeonik"
+              
               lineHeight="1.25"
               fontWeight="medium"
               fontSize="16px"
@@ -263,7 +263,7 @@ export const Footer = (): React.JSX.Element => (
             spacing="10px"
           >
             <Text
-              fontFamily="Aeonik"
+              
               lineHeight="1.25"
               fontWeight="medium"
               fontSize="16px"

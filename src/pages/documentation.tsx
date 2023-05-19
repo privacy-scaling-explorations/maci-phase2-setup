@@ -53,7 +53,7 @@ export const Documentation = (): React.JSX.Element => {
 				borderBottomWidth="1px"
 				>
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="0.99"
 					fontWeight="medium"
 					fontSize="48px"
@@ -92,7 +92,7 @@ export const Documentation = (): React.JSX.Element => {
 					borderBottomWidth="1px"
 				>
 					<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="0.99"
 					fontWeight="medium"
 					fontSize="48px"
@@ -138,7 +138,7 @@ export const Documentation = (): React.JSX.Element => {
 				>
 
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.29"
 					fontWeight="medium"
 					fontSize="28px"
@@ -150,7 +150,7 @@ export const Documentation = (): React.JSX.Element => {
 				</Text>
 				<span className="unsupported" />
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="medium"
 					fontSize="16px"
@@ -188,7 +188,7 @@ export const Documentation = (): React.JSX.Element => {
 				alignSelf="stretch"
 				>
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.29"
 					fontWeight="medium"
 					fontSize="28px"
@@ -200,7 +200,7 @@ export const Documentation = (): React.JSX.Element => {
 				</Text>
 				<span className="unsupported" />
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="medium"
 					fontSize="16px"
@@ -238,7 +238,7 @@ export const Documentation = (): React.JSX.Element => {
 				alignSelf="stretch"
 				>
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.29"
 					fontWeight="medium"
 					fontSize="28px"
@@ -250,7 +250,7 @@ export const Documentation = (): React.JSX.Element => {
 				</Text>
 				<span className="unsupported" />
 				<Text
-					fontFamily="Aeonik"
+					
 					lineHeight="1.25"
 					fontWeight="medium"
 					fontSize="16px"
