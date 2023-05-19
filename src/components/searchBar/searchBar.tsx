@@ -1,8 +1,14 @@
 import React from 'react'
 import { Input } from '@chakra-ui/react'
+import { MaciWhite } from '../../utils/colors'
 
-export function SearchBar(): React.JSX.Element {
+export function SearchBar(props: any): React.JSX.Element {
     return (
-        <Input placeholder='Search for a contribution'></Input>
+        <Input 
+        borderColor="#000000"
+        borderRadius="5px"
+        background={MaciWhite}
+        placeholder={props.placeholder} 
+        />
     )
 }

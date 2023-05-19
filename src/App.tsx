@@ -2,14 +2,20 @@ import React from 'react';
 import './App.css';
 import { Home } from './pages/home';
 import { Footer } from './components/footer/footer';
-import { FAQ } from './pages/faq';
+import { BrowserRouter as Router, Routes,  Route } from 'react-router-dom';
+import { Documentation } from './pages/documentation';
+import { NavBar } from './components/navbar/navbar';
 
 function App(): React.JSX.Element {
   return (
     <div className="App">
-        <Home />
-        <FAQ />
-        <Footer />
+        <Router>
+			<Routes>
+				<Route path='/' element={<Home />} />
+				<Route path='/documentation' element={<Documentation />} />
+			</Routes>
+			<Footer />
+        </Router>
     </div>
   );
 }

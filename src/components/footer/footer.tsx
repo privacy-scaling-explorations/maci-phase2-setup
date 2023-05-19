@@ -23,7 +23,7 @@ export const Footer = (): React.JSX.Element => (
           width="1239px"
           maxWidth="100%"
         >
-          <Stack justify="flex-start" align="flex-start" spacing="20px">
+          <Stack justify="flex-start" align="flex-start" textAlign="left" spacing="20px">
             <Text
               fontFamily="Aeonik"
               lineHeight="1.27"
@@ -86,6 +86,7 @@ export const Footer = (): React.JSX.Element => (
               justify="flex-start"
               align="flex-start"
               spacing="110px"
+              textAlign="left"
             >
               <Box>
                 <Text
@@ -192,7 +193,7 @@ export const Footer = (): React.JSX.Element => (
         direction="row"
         justify="space-between"
         align="center"
-        spacing="413px"
+        spacing="100px"
         width="1239px"
         maxWidth="100%"
       >
