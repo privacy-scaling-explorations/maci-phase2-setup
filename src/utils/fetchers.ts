@@ -41,6 +41,14 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
 export const getAverageData = async (): Promise<IAvgStats> => {
     const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
 
+    if (circuits.length === 0) return {
+        waitingQueue: 0,
+        failedContributions: 0,
+        completedContributions: 0,
+        avgContributionTime: 0,
+        diskSpaceRequired: 0
+    }
+
     let totalWaitingQueue: number = 0
     let totalFailedContributions: number = 0
     let totalCompletedContributions: number = 0
@@ -261,12 +269,14 @@ export const getCurrentContributor = async (circuitId: string): Promise<string> 
  * @returns <boolean> - whether the ceremony is active or not.
  */
 export const getCeremonyState = async (): Promise<boolean> => {
-    const ceremony = await getDocumentById(userFirestore, "ceremonies", MACI_CEREMONY_ID)
-    const ceremonyData = ceremony.data()
-    if (!ceremonyData) return false
-
-    if (ceremonyData.state === "OPENED") return true 
-    return false 
+    try {
+        const ceremony = await getDocumentById(userFirestore, "ceremonies", MACI_CEREMONY_ID)
+        const ceremonyData = ceremony.data()
+        if (!ceremonyData) return false
+    
+        if (ceremonyData.state === "OPENED") return true 
+        return false 
+    } catch (error: any) { return false }
 }
 
 /**

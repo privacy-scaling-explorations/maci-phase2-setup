@@ -20,7 +20,13 @@ cd maci-phase2-setup && yarn
 
 ## 📜 Usage
 
-First build all the packages
+First copy the env-template and fill the .env file: 
+
+```bash 
+cp .env-template .env
+```
+
+Build all the packages
 
 ```bash
 yarn build
