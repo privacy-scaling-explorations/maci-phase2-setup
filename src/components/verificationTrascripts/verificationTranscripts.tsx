@@ -85,7 +85,6 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         return transcript.contributorId.includes(searchTerm)
     }
 
-    console.log(selectedCircuit)
     return (
         <Stack
         paddingBottom="5%"
