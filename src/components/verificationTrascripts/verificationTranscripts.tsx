@@ -25,9 +25,15 @@ import { getAllVerificationTranscripts } from '../../utils/fetchers'
 import { getEllipsisTxt } from '../../utils/formatting'
 import Layer17 from "../../assets/Layer_1-7.png"
   
+
+/* https://codesandbox.io/s/chakra-ui-react-table-0ojzil?file=/index.tsx for pagination */
 export const VerificationTranscript = (props: any) => {
 
+    // how many items we show per page
+    const itemsPerPage = 6
     const [transcripts, setTranscripts] = useState<ITranscript[]>([])
+    const [startIndex, setStartIndex] = useState(0)
+    const [endIndex, setEndIndex] = useState(itemsPerPage)
    
     useEffect(() => {
         const _getTranscripts = async () => {
@@ -37,6 +43,17 @@ export const VerificationTranscript = (props: any) => {
 
         _getTranscripts().catch()
     }, [])
+
+    // change which items to show
+    const paginate = (index: number) => {
+        if (index === 1) {
+            setStartIndex(0)
+            setEndIndex(itemsPerPage)
+        } else {
+            setEndIndex(index * itemsPerPage)
+            setStartIndex(index * itemsPerPage - itemsPerPage)
+        }
+    }
 
     return (
         <Stack
@@ -175,7 +192,7 @@ export const VerificationTranscript = (props: any) => {
                     <Tbody>
                         {
                             transcripts &&
-                            transcripts.map((transcript: ITranscript, index: number) => {
+                            transcripts.slice(startIndex, endIndex).map((transcript: ITranscript, index: number) => {
                                 return (
                                     <Tr key={index}>
                                         <Td>
@@ -281,10 +298,18 @@ export const VerificationTranscript = (props: any) => {
                     </Stack>
                 </Stack>
                 <Stack>
-                    <NumberInput borderRadius="5px" borderWidth="1px" borderColor={MaciBlack} defaultValue="1" size="lg">
+                    <NumberInput 
+                    min={1}
+                    max={transcripts.length/itemsPerPage}
+                    borderRadius="5px" 
+                    borderWidth="1px" 
+                    borderColor={MaciBlack} 
+                    defaultValue="1" 
+                    size="lg"
+                    onChange={(valueString: string, valueNumber: number) => {paginate(valueNumber)}}
+                    >
                     <NumberInputField borderWidth="0px" />
                     <NumberInputStepper background="white">
-                        {/* https://codesandbox.io/s/chakra-ui-react-table-0ojzil?file=/index.tsx for pagination */}
                         <NumberIncrementStepper />
                         <NumberDecrementStepper />
                     </NumberInputStepper>
