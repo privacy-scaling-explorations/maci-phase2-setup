@@ -20,20 +20,21 @@ import {
 import { SearchBar } from '../searchBar/searchBar'
 import { ICircuit, ITranscript } from '../../utils/interfaces'
 import { MaciBlack, MaciLightBase, MaciWhite, MaciYellow } from '../../utils/colors'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { getAllVerificationTranscripts } from '../../utils/fetchers'
 import { getEllipsisTxt } from '../../utils/formatting'
 import Layer17 from "../../assets/Layer_1-7.png"
-  
+import axios from "axios"  
 
-/* https://codesandbox.io/s/chakra-ui-react-table-0ojzil?file=/index.tsx for pagination */
-export const VerificationTranscript = (props: any) => {
+export const VerificationTranscript = (props: any): React.JSX.Element => {
 
     // how many items we show per page
     const itemsPerPage = 6
     const [transcripts, setTranscripts] = useState<ITranscript[]>([])
-    const [startIndex, setStartIndex] = useState(0)
-    const [endIndex, setEndIndex] = useState(itemsPerPage)
+    const [startIndex, setStartIndex] = useState<number>(0)
+    const [endIndex, setEndIndex] = useState<number>(itemsPerPage)
+    const [searchTerm, setSearchTerm] = useState<string>("")
+    const [selectedCircuit, setSelectedCircuit] = useState<string>("")
    
     useEffect(() => {
         const _getTranscripts = async () => {
@@ -55,6 +56,36 @@ export const VerificationTranscript = (props: any) => {
         }
     }
 
+    const download = (transcriptIndex: number) => {
+        const transcript = transcripts[transcriptIndex]
+        const url = window.URL.createObjectURL(
+            new Blob([transcript.content])
+        )
+
+        const link = document.createElement('a')
+        link.href = url 
+        link.setAttribute('download', `transcript-${transcript.circuitName}-${transcript.zKeyIndex}.txt`)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+    }
+
+    const checkByCircuit = (transcript: ITranscript) => {
+        if (selectedCircuit === "") return true 
+        return transcript.circuitName === selectedCircuit
+    }
+
+    const checkSearch = (transcript: ITranscript) => {
+        if (searchTerm === "") return true 
+        // if it's alphanumerical it's the zkey index 
+        if (searchTerm.match(/^[0-9]+$/)) {
+            return transcript.zKeyIndex.includes(searchTerm)
+        }
+        // otherwise is the participant index
+        return transcript.contributorId.includes(searchTerm)
+    }
+
+    console.log(selectedCircuit)
     return (
         <Stack
         paddingBottom="5%"
@@ -132,10 +163,11 @@ export const VerificationTranscript = (props: any) => {
                             borderColor={MaciBlack}
                             background={MaciWhite}
                             placeholder="Select circuit"
+                            onChange={(e: any) => setSelectedCircuit(e.target.value)} 
                             >
                                 {
                                     props.circuits.map((circuit: ICircuit, index: number) => {
-                                        return <option key={index} value={circuit.id}>{circuit.name}</option>
+                                        return <option key={index} value={circuit.name}>{circuit.name}</option>
                                     })
                                 }
                             </Select>
@@ -143,7 +175,7 @@ export const VerificationTranscript = (props: any) => {
                     </Stack>
                 </Stack>
                 <Stack width="100%">
-                    <SearchBar placeholder="Search contribution index or contributor ID" />
+                    <SearchBar setSearch={setSearchTerm} placeholder="Search contribution index or contributor ID" />
                 </Stack>
                 </Stack>
             </Stack>
@@ -157,32 +189,38 @@ export const VerificationTranscript = (props: any) => {
                 <Table textAlign='center' variant='simple' width="100%" borderColor={MaciBlack}>
                     <Thead>
                         <Tr>
-                            <Th lineHeight="1.5"
+                            <Th 
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
                                 color={MaciBlack}>Contribution index</Th>
-                            <Th lineHeight="1.5"
+                            <Th 
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
                                 color={MaciBlack}>Contributor ID</Th>
-                            <Th lineHeight="1.5"
+                            <Th 
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
-                                color={MaciBlack}>Transcript Content</Th>
-                            <Th lineHeight="1.5"
+                                color={MaciBlack}>Circuit Name</Th>
+                            <Th 
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
                                 color={MaciBlack}>Contributor Hash</Th>
-                            <Th lineHeight="1.5"
+                            <Th    
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
                                 color={MaciBlack}>Public Attestastion</Th>
-                            <Th lineHeight="1.5"
+                            <Th 
+                                lineHeight="1.5"
                                 fontWeight="bold"
                                 fontSize="16px"
                                 letterSpacing="0.02em"
@@ -191,8 +229,9 @@ export const VerificationTranscript = (props: any) => {
                     </Thead>
                     <Tbody>
                         {
+
                             transcripts &&
-                            transcripts.slice(startIndex, endIndex).map((transcript: ITranscript, index: number) => {
+                            transcripts.filter(checkByCircuit).filter(checkSearch).slice(startIndex, endIndex).map((transcript: ITranscript, index: number) => {
                                 return (
                                     <Tr key={index}>
                                         <Td>
@@ -213,7 +252,7 @@ export const VerificationTranscript = (props: any) => {
                                             <Text
                                             color={MaciBlack}
                                             >
-                                            {getEllipsisTxt(transcript.contributorId, 10)}
+                                            {transcript.circuitName}
                                             </Text>
                                         </Td>  
                                         <Td>
@@ -242,6 +281,7 @@ export const VerificationTranscript = (props: any) => {
                                             borderWidth="1px"
                                             width="100%"
                                             height="48px"
+                                            onClick={() => download(index)}
                                             >   Download
                                             </Button>
                                         </Td>

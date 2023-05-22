@@ -182,7 +182,7 @@ export const getVerificationTranscript = async (
                 circuitId,
                 identifier
             )
-    
+            
             for (const contribution of contributions) {
                 const contributionData = contribution.data
                 const transcriptStoragePath = contributionData.files.transcriptStoragePath
@@ -196,7 +196,8 @@ export const getVerificationTranscript = async (
                     contributorId: identifier,
                     zKeyIndex: contributionData.zkeyIndex,
                     url: url,
-                    content: content
+                    content: content,
+                    circuitName: contributionData.files.lastZkeyFilename.split('_').at(0)
                 }
     
                 transcripts.push(transcript)
@@ -220,7 +221,8 @@ export const getVerificationTranscript = async (
             contributorId: contribution.data.participantId,
             zKeyIndex: identifier,
             url: url,
-            content: content
+            content: content,
+            circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0)
         }
     
         transcripts.push(transcript)

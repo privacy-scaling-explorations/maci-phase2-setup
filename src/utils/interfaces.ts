@@ -22,4 +22,5 @@ export interface ITranscript {
     zKeyIndex: string
     url: string 
     content: string 
+    circuitName: string 
 }

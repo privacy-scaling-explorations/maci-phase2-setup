@@ -10,6 +10,7 @@ export function SearchBar(props: any): React.JSX.Element {
         marginTop="4px"
         background={MaciWhite}
         placeholder={props.placeholder} 
+        onChange={(e) => props.setSearch(e.target.value)}
         />
     )
 }

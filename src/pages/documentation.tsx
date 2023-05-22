@@ -1,10 +1,11 @@
 import { Stack, Text } from '@chakra-ui/react'
 import React from 'react'
 import { MaciBlack, MaciLightYellow, MaciYellow } from '../utils/colors'
-import VectorDown from '../assets/Vector.png'
-import AuthGitHubImg from "../assets/authGitHub.png"
-import ContributeImg from "../assets/contributeImg.png"
+import VectorDown from '../assets/Vector.svg'
+import AuthGitHubImg from "../assets/authGitHub.svg"
+import ContributeImg from "../assets/contributeImg.svg"
 import { NavBar } from '../components/navbar/navbar'
+import ContributeTitle from "../assets/contributionsteps.svg"
 
 export const Documentation = (): React.JSX.Element => {
 	return (
@@ -38,71 +39,7 @@ export const Documentation = (): React.JSX.Element => {
 				align="flex-start"
 				spacing="0px"
 			>
-				<Stack
-				paddingX="30px"
-				paddingY="14px"
-				borderRadius="100px"
-				direction="row"
-				justify="center"
-				align="center"
-				spacing="10px"
-				borderColor={MaciBlack}
-				borderStartWidth="1px"
-				borderEndWidth="1px"
-				borderTopWidth="1px"
-				borderBottomWidth="1px"
-				>
-				<Text
-					
-					lineHeight="0.99"
-					fontWeight="medium"
-					fontSize="48px"
-					letterSpacing="0.01em"
-					color={MaciBlack}
-					textAlign="center"
-				>
-					Contribution
-				</Text>
-				</Stack>
-			</Stack>
-			<Stack
-				direction="row"
-				justify="flex-start"
-				align="center"
-				spacing="52px"
-			>
-				<Stack
-				direction="row"
-				justify="flex-start"
-				align="flex-start"
-				spacing="0px"
-				>
-				<Stack
-					paddingX="30px"
-					paddingY="14px"
-					borderRadius="100px"
-					direction="row"
-					justify="center"
-					align="center"
-					spacing="10px"
-					borderColor={MaciBlack}
-					borderStartWidth="1px"
-					borderEndWidth="1px"
-					borderTopWidth="1px"
-					borderBottomWidth="1px"
-				>
-					<Text
-					
-					lineHeight="0.99"
-					fontWeight="medium"
-					fontSize="48px"
-					letterSpacing="0.01em"
-					color={MaciBlack}
-					>
-					steps
-					</Text>
-				</Stack>
-				</Stack>
+				<img src={ContributeTitle} />
 			</Stack>
 			</Stack>
 			<Stack

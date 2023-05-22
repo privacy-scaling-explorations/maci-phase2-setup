@@ -1,6 +1,9 @@
 import React from 'react'
 import { Stack, Text, Box } from '@chakra-ui/react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
+import FooterImg from "../../assets/footerimg.png"
+import GitcoinImg from "../../assets/gitcoin.svg"
+import CLRFundImg from "../../assets/clrfund.svg"
 
 export const Footer = (): React.JSX.Element => (
   <Stack
@@ -65,21 +68,18 @@ export const Footer = (): React.JSX.Element => (
             align="flex-start"
             spacing="110px"
           >
-            <Box>
-              <Text
-                
-                lineHeight="1.25"
-                fontWeight="bold"
-                fontSize="16px"
-                letterSpacing="0.03em"
-                color={MaciYellow}
-              >
-                Sponsored by
-              </Text>
-              <Stack justify="flex-start" align="flex-start" spacing="18px">
-                <Box />
-                <Box width="102px" height="26px" />
-              </Stack>
+            <Box width="100%" textAlign="left" >
+				<Text
+					lineHeight="1.25"
+					fontWeight="bold"
+					fontSize="16px"
+					letterSpacing="0.03em"
+					color={MaciYellow}
+				>
+					Sponsored by
+				</Text>
+				<img src={GitcoinImg} />
+				<img src={CLRFundImg} /> 	
             </Box>
             <Stack
               direction="row"
@@ -90,12 +90,11 @@ export const Footer = (): React.JSX.Element => (
             >
               <Box>
                 <Text
-                  
-                  lineHeight="1.25"
-                  fontWeight="regular"
-                  fontSize="16px"
-                  letterSpacing="0.03em"
-                  color={MaciWhite}
+				lineHeight="1.25"
+				fontWeight="regular"
+				fontSize="16px"
+				letterSpacing="0.03em"
+				color={MaciWhite}
                 >
                   Your privacy
                 </Text>
@@ -187,7 +186,6 @@ export const Footer = (): React.JSX.Element => (
             </Stack>
           </Stack>
         </Stack>
-        <span className="unsupported" />
       </Stack>
       <Stack
         direction="row"
@@ -214,22 +212,7 @@ export const Footer = (): React.JSX.Element => (
           align="center"
           spacing="10px"
         >
-          <Stack width="30px" height="33px" />
-          <Stack
-            paddingX="2px"
-            borderRadius="100px"
-            direction="row"
-            justify="flex-start"
-            align="flex-start"
-            spacing="10px"
-            overflow="hidden"
-            borderColor={MaciYellow}
-            borderStartWidth="0.5px"
-            borderEndWidth="0.5px"
-            borderTopWidth="0.5px"
-            borderBottomWidth="0.5px"
-          />
-          <Stack width="30px" height="33px" />
+			<img src={FooterImg} />
         </Stack>
         <Stack
           direction="row"
@@ -237,41 +220,40 @@ export const Footer = (): React.JSX.Element => (
           align="flex-start"
           spacing="26px"
         >
-          <Stack
-            padding="10px"
-            direction="row"
-            justify="flex-start"
-            align="flex-start"
-            spacing="10px"
-          >
-            <Text
-              
-              lineHeight="1.25"
-              fontWeight="medium"
-              fontSize="16px"
-              letterSpacing="0.03em"
-              color="#787878"
-            >
-              Twitter
-            </Text>
-          </Stack>
-          <Stack
-            padding="10px"
-            direction="row"
-            justify="flex-start"
-            align="flex-start"
-            spacing="10px"
-          >
-            <Text
-              
-              lineHeight="1.25"
-              fontWeight="medium"
-              fontSize="16px"
-              letterSpacing="0.03em"
-              color="#787878"
-            >
-              Discord
-            </Text>
+			<Stack
+				padding="10px"
+				direction="row"
+				justify="flex-start"
+				align="flex-start"
+				spacing="10px"
+			>
+				<Text 
+				lineHeight="1.25"
+				fontWeight="medium"
+				fontSize="16px"
+				letterSpacing="0.03em"
+				color="#787878"
+				>
+				Twitter
+				</Text>
+          	</Stack>
+			<Stack
+				padding="10px"
+				direction="row"
+				justify="flex-start"
+				align="flex-start"
+				spacing="10px"
+			>
+				<Text
+				
+				lineHeight="1.25"
+				fontWeight="medium"
+				fontSize="16px"
+				letterSpacing="0.03em"
+				color="#787878"
+				>
+				Discord
+				</Text>
           </Stack>
         </Stack>
       </Stack>
