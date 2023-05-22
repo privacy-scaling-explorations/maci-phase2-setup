@@ -14,7 +14,7 @@ function App(): React.JSX.Element {
 				<Route path='/documentation' element={<Documentation />} />
 			</Routes>
 			<Footer />
-        </Router>
+      	</Router>
     </div>
   );
 }

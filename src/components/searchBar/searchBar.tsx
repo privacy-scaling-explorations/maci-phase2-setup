@@ -7,6 +7,7 @@ export function SearchBar(props: any): React.JSX.Element {
         <Input 
         borderColor="#000000"
         borderRadius="5px"
+        marginTop="4px"
         background={MaciWhite}
         placeholder={props.placeholder} 
         />

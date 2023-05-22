@@ -22,6 +22,7 @@ export const Home = () => {
 		avgContributionTime: 0,
 		diskSpaceRequired: 0
 	})
+	// state variables
 	const [circuits, setCircuits] = useState<ICircuit[]>([])
 	const [totalContributions, setTotalContributions] = useState<number>(0)
 	const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
@@ -55,56 +56,57 @@ export const Home = () => {
 
 
 	return (
-		<>
+		<Stack width={["100%", "100%", "100%", "100%"]}>
 			<NavBar background={"transparent"} />
 			<Stack
 				paddingBottom="5%"
 				justify="center"
 				align="center"
-				width="100%"
 				height="100%"
 				paddingTop="5%"
 				backgroundImage={WireRopeBackground}
 				backgroundRepeat="no-repeat"
-				backgroundPosition="inherit"
+				width="100%"
 			>
 				<Stack
 				justify="flex-start"
 				align="flex-start"
-				spacing="175px"
 				flex="1"
 				alignSelf="stretch"
 				>
-
-				<Stack direction="row" justify="flex-start" align="center" spacing="-1px">
+				<Stack 
+				direction="row" 
+				justify="flex-start" 
+				align="center" 
+				spacing="-1px"
+				width="100%"
+				>
 					<Stack
 					justify="flex-start"
 					align="flex-start"
 					spacing="-1px"
-					width="710px"
-					maxWidth="100%"
+					width="100%"
 					>
 					<Stack
-						paddingStart="101px"
-						paddingEnd="26px"
-						paddingY="14px"
-						borderRightRadius="100px"
-						direction="row"
-						justify="flex-start"
-						align="center"
-						spacing="0px"
-						borderColor="#000000"
-						borderStartWidth="1.5px"
-						borderEndWidth="1.5px"
-						borderTopWidth="1.5px"
-						borderBottomWidth="1.5px"
-						borderStyle="dashed"
-						width="415px"
-						height="44px"
-						maxWidth="100%"
+					paddingStart="101px"
+					paddingEnd="26px"
+					paddingY="14px"
+					borderRightRadius="100px"
+					direction="row"
+					justify="flex-start"
+					align="center"
+					spacing="0px"
+					borderColor="#000000"
+					borderStartWidth="1.5px"
+					borderEndWidth="1.5px"
+					borderTopWidth="1.5px"
+					borderBottomWidth="1.5px"
+					borderStyle="dashed"
+					width="415px"
+					height="44px"
+					maxWidth="100%"
 					>
 						<Text
-						
 						lineHeight="1.33"
 						fontWeight="bold"
 						fontSize="12px"
@@ -127,8 +129,6 @@ export const Home = () => {
 						align="flex-start"
 						spacing="-1px"
 						width="572px"
-						height="331px"
-						maxWidth="100%"
 						>
 						<Stack
 							paddingStart="20px"
@@ -169,9 +169,7 @@ export const Home = () => {
 							alignSelf="stretch"
 						>
 							<Stack
-							paddingStart="100px"
-							paddingEnd="47px"
-							paddingY="12px"
+							padding="2%"
 							borderRadius="100px"
 							direction="row"
 							justify="center"
@@ -179,8 +177,8 @@ export const Home = () => {
 							spacing="10px"
 							borderColor="#000000"
 							borderWidth="1px"
-							width="572px"
-							height="80px"
+							width="100%"
+							height="100%"
 							maxWidth="100%"
 							background={MaciWhite}
 							>
@@ -194,8 +192,7 @@ export const Home = () => {
 								flex="1"
 								alignSelf="stretch"
 							>
-								Arcu scelerisque tristique ultrices feugiat interdum nibh
-								porttitor risus ullamcorper.
+								MACI is the privacy king.
 							</Text>
 							</Stack>
 						</Stack>
@@ -777,7 +774,7 @@ export const Home = () => {
 			</Stack>
 			<VerificationTranscript circuits={circuits} />
 			<FAQ />
-		</>
+		</Stack>
 	)
 
 }
