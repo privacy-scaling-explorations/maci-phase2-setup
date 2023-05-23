@@ -1,8 +1,5 @@
-<p align="center">
-    <h1 align="center">
-     MACI V1 ceremony website
-    </h1>
-</p>
+MACI V1 ceremony website
+------------------------
 
 ## 🛠 Installation
 
