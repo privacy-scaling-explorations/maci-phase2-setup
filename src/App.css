@@ -3,3 +3,10 @@
   background: #EAECE1;
   width: 100%;
 }
+
+
+iframe {
+  border-radius: 25px !important;
+  border-color: #FFFFFF;
+  border-width: 1px;
+}
