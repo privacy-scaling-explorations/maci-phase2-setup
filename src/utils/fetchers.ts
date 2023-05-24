@@ -1,5 +1,5 @@
 import { MACI_CEREMONY_ID, bucketUrl, genesisZkeyIndex } from "./constants"
-import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollectionPath, getContributionsCollectionPath, getCircuitContributionsFromContributor, queryCollection, fromQueryToFirebaseDocumentInfo } from "./firebase"
+import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollectionPath, getContributionsCollectionPath, getCircuitContributionsFromContributor, queryCollection, fromQueryToFirebaseDocumentInfo, getParticipantsCollectionPath } from "./firebase"
 import { IAvgStats, ICircuit, ITranscript } from "./interfaces"
 import { where } from "firebase/firestore"
 import axios from "axios"
@@ -187,7 +187,13 @@ export const getVerificationTranscript = async (
                 const contributionData = contribution.data
                 const transcriptStoragePath = contributionData.files.transcriptStoragePath
                 const url = `${bucketUrl}/${transcriptStoragePath}`
-    
+
+                const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), identifier)
+                const participantData = participantDoc.data()
+                if (!participantData) return transcripts
+                
+                const contributionHash = participantData.contributions.filter((c: any) => c.doc === contribution.id).at(0).hash
+
                 let content = ""
                 const resp = await axios.get(url)
                 if (resp.status === 200) content = resp.data
@@ -197,7 +203,8 @@ export const getVerificationTranscript = async (
                     zKeyIndex: contributionData.zkeyIndex,
                     url: url,
                     content: content,
-                    circuitName: contributionData.files.lastZkeyFilename.split('_').at(0)
+                    circuitName: contributionData.files.lastZkeyFilename.split('_').at(0),
+                    contributionHash: contributionHash
                 }
     
                 transcripts.push(transcript)
@@ -216,13 +223,22 @@ export const getVerificationTranscript = async (
         let content = ""
         const resp = await axios.get(url)
         if (resp.status === 200) content = resp.data
+
+        const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), contribution.data.participantId)
+        if (!participantDoc) return transcripts
+        const participantData = participantDoc.data()
+        if (!participantData) return transcripts
+        if (participantData.contributions.length === 0) return transcripts
+
+        const contributionHash = participantData.contributions.filter((c: any) => c.doc === contribution.id).at(0).hash
     
         const transcript: ITranscript = {
             contributorId: contribution.data.participantId,
             zKeyIndex: identifier,
             url: url,
             content: content,
-            circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0)
+            circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0),
+            contributionHash: contributionHash
         }
     
         transcripts.push(transcript)

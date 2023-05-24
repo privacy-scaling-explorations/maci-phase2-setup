@@ -23,4 +23,5 @@ export interface ITranscript {
     url: string 
     content: string 
     circuitName: string 
+    contributionHash: string 
 }
