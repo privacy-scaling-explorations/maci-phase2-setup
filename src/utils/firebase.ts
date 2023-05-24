@@ -13,7 +13,8 @@ import {
     QueryConstraint,
     QueryDocumentSnapshot,
     QuerySnapshot,
-    where
+    where,
+    initializeFirestore
 } from "firebase/firestore"
 
 /**
@@ -31,11 +32,15 @@ export const initializeUserServices = (): {
         projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
         authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
         messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_FIREBASE_APP_ID 
+        appId: process.env.REACT_APP_FIREBASE_APP_ID,
+        
     })
 
     // Init services.
-    const userFirestore = getFirestore(userApp)
+    const userFirestore = initializeFirestore(userApp, {
+        experimentalForceLongPolling: true,
+
+    })
     const userFunctions = getFunctions(userApp)
 
     return {
