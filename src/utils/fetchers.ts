@@ -3,6 +3,7 @@ import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollect
 import { IAvgStats, ICircuit, ITranscript } from "./interfaces"
 import { where } from "firebase/firestore"
 import axios from "axios"
+import { convertBytesOrKbToGb } from "./formatting"
 
 /**
  * Get all circuits info for a ceremony
@@ -47,7 +48,8 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         failedContributions: 0,
         completedContributions: 0,
         avgContributionTime: 0,
-        diskSpaceRequired: 0
+        diskSpaceRequired: "0",
+        diskSpaceUnit: "GB"
     }
 
     let totalWaitingQueue: number = 0
@@ -65,12 +67,21 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         totalDiskSpaceRequired += await getDiskSpaceRequired(id)
     }
 
+    let diskSpaceRequired: number = totalDiskSpaceRequired
+    let diskSpaceUnit: string = "GB"
+    if (totalDiskSpaceRequired > 100000) {
+        diskSpaceRequired = convertBytesOrKbToGb(totalDiskSpaceRequired, true)
+    } else {
+        diskSpaceUnit = "KB"
+    }
+
     const stats: IAvgStats = {
         waitingQueue: Math.round(totalWaitingQueue / circuits.length),
         failedContributions: totalFailedContributions,
         completedContributions: Math.round(totalCompletedContributions / circuits.length),
-        avgContributionTime: Math.round(totalAvgContributionTime / circuits.length),
-        diskSpaceRequired: Math.round(totalDiskSpaceRequired / circuits.length)
+        avgContributionTime: totalAvgContributionTime,
+        diskSpaceRequired: diskSpaceRequired.toString(),
+        diskSpaceUnit: diskSpaceUnit
     }
 
     return stats 

@@ -14,7 +14,8 @@ export interface IAvgStats {
     failedContributions: number
     completedContributions: number
     avgContributionTime: number
-    diskSpaceRequired: number
+    diskSpaceRequired: string
+    diskSpaceUnit: string 
 }
 
 export interface ITranscript {

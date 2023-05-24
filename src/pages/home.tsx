@@ -425,9 +425,8 @@ export const Home = () => {
 						<Button
 							borderRadius="100px"
 							>
-							<Circle size="8px" background="#EF4444" marginRight="5%" />
+							<Circle size="8px" background={isCeremonyOngoing ? 'green' : "#EF4444"} marginRight="5%" />
 							<Text
-							
 							lineHeight="1.33"
 							fontWeight="medium"
 							fontSize="12px"
@@ -447,8 +446,7 @@ export const Home = () => {
 						flex="1"
 						alignSelf="stretch"
 						>
-						<Text
-							
+						<Text	
 							lineHeight="0.79"
 							fontWeight="medium"
 							fontSize="60px"
@@ -581,7 +579,7 @@ export const Home = () => {
 								color={MaciBlack}
 								alignSelf="stretch"
 								>
-								{averages.diskSpaceRequired + ' mb'} 
+								{`${averages.diskSpaceRequired} ${averages.diskSpaceUnit}`} 
 								</Text>
 							</Stack>
 							</Stack>
@@ -615,7 +613,6 @@ export const Home = () => {
 								Waiting to contribute
 								</Text>
 								<Text
-								
 								lineHeight="1.29"
 								fontWeight="medium"
 								fontSize="28px"
