@@ -8,7 +8,7 @@ import { NavBar } from '../components/navbar/navbar'
 import ContributeTitle from "../assets/contributionsteps.svg"
 import { TimestampBox } from '../components/timestampBox/timestampBox'
 
-export const Documentation = (): React.JSX.Element => {
+export const GetStarted = (): React.JSX.Element => {
 
 	const [timestamp, setTimestamp] = useState("300")
 	return (

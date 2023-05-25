@@ -79,7 +79,7 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         waitingQueue: Math.round(totalWaitingQueue / circuits.length),
         failedContributions: totalFailedContributions,
         completedContributions: Math.round(totalCompletedContributions / circuits.length),
-        avgContributionTime: totalAvgContributionTime,
+        avgContributionTime: parseFloat((totalAvgContributionTime / 1000 / 60).toFixed(2)) ,
         diskSpaceRequired: diskSpaceRequired.toString(),
         diskSpaceUnit: diskSpaceUnit
     }

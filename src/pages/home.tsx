@@ -206,7 +206,7 @@ export const Home = () => {
 							alignSelf="stretch"
 						>
 							<Link 
-							to={'documentation'}>
+							to={'get-started'}>
 								<Button
 								size="L"
 								color="Primary"
@@ -655,7 +655,7 @@ export const Home = () => {
 								color={MaciBlack}
 								alignSelf="stretch"
 								>
-								{averages.avgContributionTime}
+								{`${averages.avgContributionTime} min`}
 								</Text>
 							</Stack>
 							<Stack
@@ -696,21 +696,6 @@ export const Home = () => {
 					</Stack>
 					</Stack>
 					<Stack justify="flex-start" align="flex-start" spacing="0px">
-					<Stack
-						padding="2px"
-						borderRadius="9999px"
-						direction="row"
-						justify="flex-start"
-						align="flex-start"
-						spacing="0px"
-						overflow="hidden"
-						borderColor={MaciBlack}
-						borderStartWidth="1px"
-						borderEndWidth="1px"
-						borderTopWidth="1px"
-						borderBottomWidth="1px"
-						borderStyle="dashed"
-					/>
 					<Stack
 						direction="row"
 						justify="flex-start"

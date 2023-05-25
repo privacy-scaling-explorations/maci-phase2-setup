@@ -95,7 +95,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 					borderColor={MaciBlack}
 					borderWidth="1px"
 				>
-					<Link to={'/documentation'}>
+					<Link to={'/get-started'}>
 						<Text
 						lineHeight="1.25"
 						fontWeight="bold"
