@@ -2,21 +2,26 @@ name: Deploy to Firebase - deploy prod on push
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, feat/firebasehosting]
 
 jobs:
   build_and_preview_prod:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install deps and copy .env
+      - name: Install deps and deploy
         run: |
           yarn install
           yarn build
           echo "${{ secrets.ENV_FILE }}" > ./.env
+
+			- name: Write serviceAccountKey in a JSON file
+				uses: jsdaniell/create-json@v1.2.1
+				with:
+					name: "serviceAccountKey.json"
+					json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+				
       - name: Deploy
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          channelId: live
+        run: yarn deploy
+				env:
+					GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
