@@ -1,20 +1,22 @@
-name: Deploy to Firebase hosting - prod
+name: Deploy to Firebase - deploy prod on push
 
-# Controls when the action will run
 on:
-	push:
-		branches: [main, dev]
-
+  push:
+    branches: [main, dev]
+    
 jobs:
-	build_and_preview_prod:
-		runs-on: ubuntu-latest
-		steps:
-		- uses: actions/checkout@v3
-		- name: Install dependencies
-			- run: yarn && yarn build
-		- name: Deploy
-			- uses: FirebaseExtended/action-hosting-deploy@v0
-				with:
-					repoToken: "${{ secrets.GITHUB_TOKEN }}"
-					firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-					channelId: live
+  build_and_preview_prod:
+    runs-on: ununtu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install deps
+      run: |
+        yarn install
+        yarn build
+    - name: Deploy
+      uses: FirebaseExtended/action-hosting-deploy@v0
+      with:
+        repoToken: "${{ secrets.GITHUB_TOKEN }}"
+        firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+        channelId: live
+    
