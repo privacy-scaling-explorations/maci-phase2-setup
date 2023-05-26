@@ -13,8 +13,7 @@ jobs:
       run: |
         yarn install
         yarn build
-	echo "${{ secrets.ENV_FILE }}" > ./.env
-
+				echo "${{ secrets.ENV_FILE }}" > ./.env
     - name: Deploy
       uses: FirebaseExtended/action-hosting-deploy@v0
       with:
