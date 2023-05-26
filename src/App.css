@@ -1,12 +1,11 @@
 .App {
-  text-align: center;
-  background: #EAECE1;
-  width: 100%;
+    text-align: center;
+    background: #eaece1;
+    width: 100%;
 }
 
-
 iframe {
-  border-radius: 25px !important;
-  border-color: #FFFFFF;
-  border-width: 1px;
+    border-radius: 25px !important;
+    border-color: #ffffff;
+    border-width: 1px;
 }

@@ -1,85 +1,95 @@
 {
-  "name": "mpc-phase2-setup",
-  "version": "0.1.0",
-  "dependencies": {
-    "@adobe/node-fetch-retry": "^2.2.0",
-    "@aws-sdk/client-s3": "^3.332.0",
-    "@chakra-ui/react": "^2.6.1",
-    "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.11.0",
-    "@fontsource/poppins": "^4.5.10",
-    "@p0tion/actions": "^0.4.1",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.30",
-    "@types/react": "^18.2.6",
-    "@types/react-dom": "^18.2.4",
-    "axios": "^1.4.0",
-    "blakejs": "^1.2.1",
-    "firebase": "^9.22.0",
-    "framer-motion": "^10.12.10",
-    "parcel": "^2.8.3",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.11.2",
-    "snarkjs": "^0.6.11",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "parcel public/index.html --open",
-    "build": "parcel build public/index.html"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@parcel/config-default": "^2.8.3",
-    "@parcel/packager-raw-url": "^2.8.3",
-    "@parcel/transformer-typescript-tsc": "^2.8.3",
-    "@parcel/transformer-webmanifest": "^2.8.3",
-    "assert": "^2.0.0",
-    "browserify-zlib": "^0.2.0",
-    "constants-browserify": "^1.0.0",
-    "crypto-browserify": "^3.12.0",
-    "cz-conventional-changelog": "3.3.0",
-    "events": "^3.1.0",
-    "https-browserify": "^1.0.0",
-    "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1",
-    "process": "^0.11.10",
-    "punycode": "^1.4.1",
-    "querystring-es3": "^0.2.1",
-    "sharp": "^0.31.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
-    "url": "^0.11.0",
-    "util": "^0.12.5"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
+    "name": "mpc-phase2-setup",
+    "version": "0.1.0",
+    "dependencies": {
+        "@adobe/node-fetch-retry": "^2.2.0",
+        "@aws-sdk/client-s3": "^3.332.0",
+        "@chakra-ui/react": "^2.6.1",
+        "@emotion/react": "^11.11.0",
+        "@emotion/styled": "^11.11.0",
+        "@fontsource/poppins": "^4.5.10",
+        "@p0tion/actions": "^0.4.1",
+        "@testing-library/jest-dom": "^5.16.5",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "@types/jest": "^27.5.2",
+        "@types/node": "^16.18.30",
+        "@types/react": "^18.2.6",
+        "@types/react-dom": "^18.2.4",
+        "axios": "^1.4.0",
+        "blakejs": "^1.2.1",
+        "firebase": "^9.22.0",
+        "framer-motion": "^10.12.10",
+        "parcel": "^2.8.3",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.11.2",
+        "snarkjs": "^0.6.11",
+        "typescript": "^4.9.5",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "parcel public/index.html --open",
+        "build": "parcel build public/index.html",
+        "lint": "eslint ./src",
+        "lint:fix": "eslint ./src --fix",
+        "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@parcel/config-default": "^2.8.3",
+        "@parcel/packager-raw-url": "^2.8.3",
+        "@parcel/transformer-typescript-tsc": "^2.8.3",
+        "@parcel/transformer-webmanifest": "^2.8.3",
+        "@typescript-eslint/eslint-plugin": "^5.59.7",
+        "@typescript-eslint/parser": "^5.59.7",
+        "assert": "^2.0.0",
+        "browserify-zlib": "^0.2.0",
+        "constants-browserify": "^1.0.0",
+        "crypto-browserify": "^3.12.0",
+        "cz-conventional-changelog": "3.3.0",
+        "eslint": "^8.41.0",
+        "eslint-config-prettier": "^8.8.0",
+        "eslint-plugin-prettier": "^4.2.1",
+        "eslint-plugin-react": "^7.32.2",
+        "events": "^3.1.0",
+        "https-browserify": "^1.0.0",
+        "os-browserify": "^0.3.0",
+        "path-browserify": "^1.0.1",
+        "prettier": "^2.8.8",
+        "process": "^0.11.10",
+        "punycode": "^1.4.1",
+        "querystring-es3": "^0.2.1",
+        "sharp": "^0.31.1",
+        "stream-browserify": "^3.0.0",
+        "stream-http": "^3.2.0",
+        "url": "^0.11.0",
+        "util": "^0.12.5"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
+    "packageManager": "yarn@3.5.1",
+    "resolutions": {
+        "@p0tion/actions@^0.4.1": "patch:@p0tion/actions@npm%3A0.4.1#./.yarn/patches/@p0tion-actions-npm-0.4.1-f2d6c0996c.patch"
     }
-  },
-  "packageManager": "yarn@3.5.1",
-  "resolutions": {
-    "@p0tion/actions@^0.4.1": "patch:@p0tion/actions@npm%3A0.4.1#./.yarn/patches/@p0tion-actions-npm-0.4.1-f2d6c0996c.patch"
-  }
 }
