@@ -11,9 +11,9 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install deps and deploy
         run: |
-          yarn install
-          yarn build
           echo "${{ secrets.ENV_FILE }}" > ./.env
+          yarn install
+          yarn build  
       - name: Write serviceAccountKey in a JSON file
         uses: jsdaniell/create-json@v1.2.1
         with:
