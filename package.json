@@ -1,7 +1,6 @@
 {
   "name": "mpc-phase2-setup",
   "version": "0.1.0",
-  "private": false,
   "dependencies": {
     "@adobe/node-fetch-retry": "^2.2.0",
     "@aws-sdk/client-s3": "^3.332.0",
@@ -77,5 +76,6 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "packageManager": "yarn@3.5.1"
 }
