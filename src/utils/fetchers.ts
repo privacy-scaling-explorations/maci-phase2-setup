@@ -157,6 +157,16 @@ export const getTotalNumberOfContributions = async (): Promise<number> => {
 }
 
 /**
+ * Retrieve how many contributors have contributed to the ceremony (total contributions / circuits length)
+ * @returns <Number> - the number of contributors that have contributed to the ceremony.
+ */
+export const getNumberOfContributors = async (): Promise<number> => {
+    const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+    const contributions = await getTotalNumberOfContributions()
+    return Math.floor(contributions / circuits.length)
+}
+
+/**
  * Retrieve the average contribution time
  * @returns <Number> - the avg contribution time.
  */
