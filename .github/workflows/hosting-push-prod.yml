@@ -14,14 +14,12 @@ jobs:
           yarn install
           yarn build
           echo "${{ secrets.ENV_FILE }}" > ./.env
-
-			- name: Write serviceAccountKey in a JSON file
-				uses: jsdaniell/create-json@v1.2.1
-				with:
-					name: "serviceAccountKey.json"
-					json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-				
+      - name: Write serviceAccountKey in a JSON file
+        uses: jsdaniell/create-json@v1.2.1
+        with:
+          name: "serviceAccountKey.json"
+          json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
       - name: Deploy
         run: yarn deploy
-				env:
-					GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
