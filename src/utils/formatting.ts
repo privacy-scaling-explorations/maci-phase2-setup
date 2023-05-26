@@ -10,12 +10,3 @@ export const getEllipsisTxt = (str: string, n = 6): string => {
     }
     return ""
 };
-
-/**
- * Convert bytes or chilobytes into gigabytes with customizable precision.
- * @param bytesOrKb <number> - the amount of bytes or chilobytes to be converted.
- * @param isBytes <boolean> - true when the amount to be converted is in bytes; otherwise false (= Chilobytes).
- * @returns <number> - the converted amount in GBs.
- */
-export const convertBytesOrKbToGb = (bytesOrKb: number, isBytes: boolean): number =>
-    Number(bytesOrKb / 1024 ** (isBytes ? 3 : 2))
