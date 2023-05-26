@@ -6,14 +6,15 @@ on:
 		branches: [main, dev]
 
 jobs:
-	build_and_preview:
+	build_and_preview_prod:
 		runs-on: ubuntu-latest
 		steps:
 		- uses: actions/checkout@v3
-		# Add any build steps here.
-		- run: npm i && npm run build
-		- uses: FirebaseExtended/action-hosting-deploy@v0
-			with:
-				repoToken: "${{ secrets.GITHUB_TOKEN }}"
-				firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-        		channelId: live
+		- name: Install dependencies
+			- run: yarn && yarn build
+		- name: Deploy
+			- uses: FirebaseExtended/action-hosting-deploy@v0
+				with:
+					repoToken: "${{ secrets.GITHUB_TOKEN }}"
+					firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+					channelId: live
