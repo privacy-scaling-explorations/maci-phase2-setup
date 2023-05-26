@@ -1,9 +1,9 @@
-name: Deploy to Firebase hosting - prod
+name: Deploy to Firebase hosting - preview on PR
 
 # Controls when the action will run
 on:
-	push:
-		branches: [main, dev, feat/firebasehosting]
+	pull_request:
+		branches: [main, dev]
 
 jobs:
 	build_and_preview:
@@ -16,4 +16,6 @@ jobs:
 			with:
 				repoToken: "${{ secrets.GITHUB_TOKEN }}"
 				firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-        		channelId: live
+				expires: 7d 
+			env:
+			FIREBASE_CLI_PREVIEWS: hostingchannels
