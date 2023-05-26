@@ -747,7 +747,6 @@ export const Home = () => {
 						backgroundImage={SpriralGlassYellow}
 						backgroundRepeat="no-repeat"
 						>
-						
 						</Stack>
 					</Stack>
 					</Stack>
@@ -758,5 +757,4 @@ export const Home = () => {
 			<FAQ />
 		</Stack>
 	)
-
 }
