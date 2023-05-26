@@ -1,7 +1,7 @@
 export interface ICircuit {
     id: string
     name: string
-    waitingQueue: number 
+    waitingQueue: number
     failedContributions: number
     completedContributions: number
     avgContributionTime: number
@@ -10,16 +10,19 @@ export interface ICircuit {
 }
 
 export interface IAvgStats {
-    waitingQueue: number 
+    waitingQueue: number
     failedContributions: number
     completedContributions: number
     avgContributionTime: number
-    diskSpaceRequired: number
+    diskSpaceRequired: string
+    diskSpaceUnit: string
 }
 
 export interface ITranscript {
-    contributorId: string 
+    contributorId: string
     zKeyIndex: string
-    url: string 
-    content: string 
+    url: string
+    content: string
+    circuitName: string
+    contributionHash: string
 }

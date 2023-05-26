@@ -1,8 +1,4 @@
-<p align="center">
-    <h1 align="center">
-     MACI V1 ceremony website
-    </h1>
-</p>
+## MACI V1 ceremony website
 
 ## 🛠 Installation
 
@@ -20,9 +16,9 @@ cd maci-phase2-setup && yarn
 
 ## 📜 Usage
 
-First copy the env-template and fill the .env file: 
+First copy the env-template and fill the .env file:
 
-```bash 
+```bash
 cp .env-template .env
 ```
 
@@ -38,6 +34,6 @@ Then start locally:
 yarn start
 ```
 
-
 ## License
+
 This repository is released under the [MIT](https://github.com/privacy-scaling-explorations/maci-phase2-setup/blob/main/LICENSE) License.
