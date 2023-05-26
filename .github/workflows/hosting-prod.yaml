@@ -3,7 +3,7 @@ name: Deploy to Firebase hosting - prod
 # Controls when the action will run
 on:
 	push:
-		branches: [main, dev]
+		branches: [main, dev, feat/firebasehosting]
 
 jobs:
 	build_and_preview:
