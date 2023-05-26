@@ -1,20 +1,20 @@
 import { Stack, Text } from '@chakra-ui/react'
 import { Link } from "react-router-dom"
-import { MaciBlack, MaciLightYellow, MaciWhite, MaciYellow } from '../../utils/colors'
+import { MaciBlack, MaciWhite } from '../../utils/colors'
 import React, { useEffect, useState } from "react"
-import { getTotalNumberOfContributions } from '../../utils/fetchers'
+import { getNumberOfContributors } from '../../utils/fetchers'
 
 export const NavBar = (props: any): React.JSX.Element => {
 
-	const [totalContributions, setTotalContributions] = useState(0)
+	const [totalContributors, setTotalContributors] = useState(0)
 
 	useEffect(() => {
-		const _getTotalContributions = async () => {
-			const total = await getTotalNumberOfContributions()
-			setTotalContributions(total)
+		const _getTotalContributors = async () => {
+			const total = await getNumberOfContributors()
+			setTotalContributors(total)
 		}
 
-		_getTotalContributions().catch()
+		_getTotalContributors().catch()
 
 	}, [])
 
@@ -75,7 +75,7 @@ export const NavBar = (props: any): React.JSX.Element => {
 					letterSpacing="0.03em"
 					color="#18181B"
 					>
-					<span>{`${totalContributions} CONTRIBUTORS`}</span>
+					<span>{`${totalContributors} CONTRIBUTORS`}</span>
 					</Text>
 				</Stack>
 			</Stack>
