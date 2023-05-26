@@ -20,7 +20,8 @@ export const Home = () => {
 		failedContributions: 0,
 		completedContributions: 0,
 		avgContributionTime: 0,
-		diskSpaceRequired: 0
+		diskSpaceRequired: "0",
+		diskSpaceUnit: "KB"
 	})
 	// state variables
 	const [circuits, setCircuits] = useState<ICircuit[]>([])

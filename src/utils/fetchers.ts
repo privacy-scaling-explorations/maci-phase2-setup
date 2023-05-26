@@ -1,9 +1,23 @@
-import { MACI_CEREMONY_ID, bucketUrl, genesisZkeyIndex } from "./constants"
-import { getCeremonyCircuits, userFirestore, getDocumentById, getCircuitsCollectionPath, getContributionsCollectionPath, getCircuitContributionsFromContributor, queryCollection, fromQueryToFirebaseDocumentInfo, getParticipantsCollectionPath } from "./firebase"
+import { MACI_CEREMONY_ID, bucketUrl } from "./constants"
 import { IAvgStats, ICircuit, ITranscript } from "./interfaces"
-import { where } from "firebase/firestore"
+import { Firestore, where } from "firebase/firestore"
 import axios from "axios"
-import { convertBytesOrKbToGb } from "./formatting"
+import { formatZkeyIndex, convertBytesOrKbToGb, initializeFirebaseCoreServices, getCeremonyCircuits, getDocumentById, getCircuitsCollectionPath, getContributionsCollectionPath, getCircuitContributionsFromContributor, queryCollection, fromQueryToFirebaseDocumentInfo, getParticipantsCollectionPath 
+} from "@p0tion/actions"
+
+let userFirestore: Firestore
+
+(async () => {
+    const { firestoreDatabase } = await initializeFirebaseCoreServices(
+        process.env.REACT_APP_FIREBASE_API_KEY!,
+        process.env.REACT_APP_FIREBASE_AUTH_DOMAIN!,
+        process.env.REACT_APP_FIREBASE_PROJECT_ID!,
+        process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID!,
+        process.env.REACT_APP_FIREBASE_APP_ID!
+    )
+
+    userFirestore = firestoreDatabase
+})()
 
 /**
  * Get all circuits info for a ceremony
@@ -15,7 +29,7 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
     // find the info for each circuit
     for (const circuit of circuits) {
         const { id } = circuit
-        const { name } = circuit.data 
+        const { name } = circuit.data
         const waitingQueue = await getUsersInWaitingQueue(id)
         const failedContributions = await getFailedContributions(id)
         const completedContributions = await getCircuitContributions(id)
@@ -79,12 +93,12 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         waitingQueue: Math.round(totalWaitingQueue / circuits.length),
         failedContributions: totalFailedContributions,
         completedContributions: Math.round(totalCompletedContributions / circuits.length),
-        avgContributionTime: parseFloat((totalAvgContributionTime / 1000 / 60).toFixed(2)) ,
+        avgContributionTime: parseFloat((totalAvgContributionTime / 1000 / 60).toFixed(2)),
         diskSpaceRequired: diskSpaceRequired.toString(),
         diskSpaceUnit: diskSpaceUnit
     }
 
-    return stats 
+    return stats
 }
 
 /**
@@ -136,7 +150,7 @@ export const getTotalNumberOfContributions = async (): Promise<number> => {
     const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
     let totalContributors: number = 0
     for (const circuit of circuits) {
-        const { waitingQueue } = circuit.data 
+        const { waitingQueue } = circuit.data
         totalContributors += waitingQueue.completedContributions
     }
     return totalContributors
@@ -179,7 +193,6 @@ export const getDiskSpaceRequired = async (circuitId: string): Promise<number> =
     return zKeySizeInBytes
 }
 
-
 /**
  * Retreive a verification transcript
  * @param identifier - the identifier of the transcript
@@ -188,8 +201,8 @@ export const getDiskSpaceRequired = async (circuitId: string): Promise<number> =
  * @returns <string> - the particular verification transcript.
  */
 export const getVerificationTranscript = async (
-    identifier: string, 
-    byId: boolean, 
+    identifier: string,
+    byId: boolean,
     circuitId: string
 ): Promise<ITranscript[]> => {
     // we keep an array because a coordinator will have 2 transcripts
@@ -203,7 +216,7 @@ export const getVerificationTranscript = async (
                 circuitId,
                 identifier
             )
-            
+
             for (const contribution of contributions) {
                 const contributionData = contribution.data
                 const transcriptStoragePath = contributionData.files.transcriptStoragePath
@@ -212,13 +225,13 @@ export const getVerificationTranscript = async (
                 const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), identifier)
                 const participantData = participantDoc.data()
                 if (!participantData) return transcripts
-                
+
                 const contributionHash = participantData.contributions.filter((c: any) => c.doc === contribution.id).at(0).hash
 
                 let content = ""
                 const resp = await axios.get(url)
                 if (resp.status === 200) content = resp.data
-    
+
                 const transcript: ITranscript = {
                     contributorId: identifier,
                     zKeyIndex: contributionData.zkeyIndex,
@@ -227,18 +240,18 @@ export const getVerificationTranscript = async (
                     circuitName: contributionData.files.lastZkeyFilename.split('_').at(0),
                     contributionHash: contributionHash
                 }
-    
+
                 transcripts.push(transcript)
             }
-    
-            return transcripts 
+
+            return transcripts
         }
-       
+
         const doc = await queryCollection(userFirestore, getContributionsCollectionPath(MACI_CEREMONY_ID, circuitId), [where("zkeyIndex", "==", identifier)])
-    
+
         if (!doc) return transcripts
-    
-        const contribution = fromQueryToFirebaseDocumentInfo(doc.docs).at(0)
+
+        const contribution = fromQueryToFirebaseDocumentInfo(doc.docs).at(0)!
         const url = `${bucketUrl}/${contribution.data.files.transcriptStoragePath}`
 
         let content = ""
@@ -252,7 +265,7 @@ export const getVerificationTranscript = async (
         if (participantData.contributions.length === 0) return transcripts
 
         const contributionHash = participantData.contributions.filter((c: any) => c.doc === contribution.id).at(0).hash
-    
+
         const transcript: ITranscript = {
             contributorId: contribution.data.participantId,
             zKeyIndex: identifier,
@@ -261,9 +274,9 @@ export const getVerificationTranscript = async (
             circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0),
             contributionHash: contributionHash
         }
-    
+
         transcripts.push(transcript)
-        return transcripts 
+        return transcripts
     } catch (error: any) {
         return transcripts
     }
@@ -313,25 +326,8 @@ export const getCeremonyState = async (): Promise<boolean> => {
         const ceremony = await getDocumentById(userFirestore, "ceremonies", MACI_CEREMONY_ID)
         const ceremonyData = ceremony.data()
         if (!ceremonyData) return false
-    
-        if (ceremonyData.state === "OPENED") return true 
-        return false 
+
+        if (ceremonyData.state === "OPENED") return true
+        return false
     } catch (error: any) { return false }
-}
-
-/**
- * Transform a number in a zKey index format.
- * @dev this method is aligned with the number of characters of the genesis zKey index (which is a constant).
- * @param progress <number> - the progression in zKey index.
- * @returns <string> - the progression in a zKey index format (`XYZAB`).
- */
-export const formatZkeyIndex = (progress: number): string => {
-    let index = progress.toString()
-
-    // Pad with zeros if the progression has less digits.
-    while (index.length < genesisZkeyIndex.length) {
-        index = `0${index}`
-    }
-
-    return index
 }
