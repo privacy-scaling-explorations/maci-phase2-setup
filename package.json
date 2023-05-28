@@ -34,7 +34,8 @@
         "deploy": "firebase deploy --only hosting",
         "lint": "eslint ./src",
         "lint:fix": "eslint ./src --fix",
-        "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json"
+        "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc.json",
+        "prepare": "is-ci || husky install"
     },
     "eslintConfig": {
         "extends": [
@@ -73,6 +74,9 @@
         "events": "^3.1.0",
         "firebase-tools": "^12.2.1",
         "https-browserify": "^1.0.0",
+        "husky": "^7.0.0",
+        "is-ci": "^3.0.1",
+        "lint-staged": "^13.2.2",
         "os-browserify": "^0.3.0",
         "path-browserify": "^1.0.1",
         "prettier": "^2.8.8",
