@@ -26,3 +26,13 @@ export interface ITranscript {
     circuitName: string
     contributionHash: string
 }
+
+export interface ILiveCeremonyData {
+    alive: boolean 
+    circuitSequence: number
+    currentContributor: string 
+    circuitName: string 
+    ETA: string 
+    timeSpent: string 
+    contributionStep: string 
+}

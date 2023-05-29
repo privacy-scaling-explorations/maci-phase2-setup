@@ -1,5 +1,5 @@
 import { MACI_CEREMONY_ID, bucketUrl } from './constants'
-import { IAvgStats, ICircuit, ITranscript } from './interfaces'
+import { IAvgStats, ICircuit, ILiveCeremonyData, ITranscript } from './interfaces'
 import { Firestore, where } from 'firebase/firestore'
 import axios from 'axios'
 import {
@@ -17,7 +17,7 @@ import {
 } from '@p0tion/actions'
 
 let userFirestore: Firestore
-;(async () => {
+(async () => {
     const { firestoreDatabase } = await initializeFirebaseCoreServices(
         process.env.REACT_APP_FIREBASE_API_KEY!,
         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN!,
@@ -28,6 +28,33 @@ let userFirestore: Firestore
 
     userFirestore = firestoreDatabase
 })()
+
+
+/**
+ * Get the live ceremony data. 
+ * @return <ILiveCeremonyData> - the live ceremony data.
+ */
+export const getLiveCeremonyData = async (): Promise<ILiveCeremonyData> => {
+    const ceremonyData: ILiveCeremonyData = {
+        alive: false,
+        circuitSequence: 0,
+        currentContributor: 'None',
+        circuitName: 'None',
+        ETA: '0 min',
+        timeSpent: '0 min',
+        contributionStep: 'None'
+    }
+
+    const status = getCeremonyState()
+    // if the ceremony is not live then let's return the default ceremony data
+    if (!status) return ceremonyData
+
+    const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+
+    console.log(circuits)
+
+    return ceremonyData 
+}
 
 /**
  * Get all circuits info for a ceremony

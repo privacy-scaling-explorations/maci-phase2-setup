@@ -7,6 +7,7 @@ import ContributeImg from '../assets/contributeImg.svg'
 import { NavBar } from '../components/navbar/navbar'
 import ContributeTitle from '../assets/contributionsteps.svg'
 import { TimestampBox } from '../components/timestampBox/timestampBox'
+import { LiveCeremony } from '../components/liveCeremony/liveCeremony'
 
 export const GetStarted = (): React.JSX.Element => {
     const [timestamp, setTimestamp] = useState('300')
@@ -210,6 +211,7 @@ export const GetStarted = (): React.JSX.Element => {
 
                 <TimestampBox setTimestamp={setTimestamp} />
             </Stack>
+            <LiveCeremony />
         </>
     )
 }
