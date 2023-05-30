@@ -9,17 +9,92 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Install deps and deploy
         run: |
           echo "${{ secrets.ENV_FILE }}" > ./.env
           yarn install
-          yarn build  
+          yarn build
+
       - name: Write serviceAccountKey in a JSON file
         uses: jsdaniell/create-json@v1.2.1
         with:
           name: "serviceAccountKey.json"
           json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
       - name: Deploy
         run: yarn deploy
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ./serviceAccountKey.json
+
+  lighthouse:
+    needs: build_and_preview_prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: '[Mobile] Audit preview URL with Lighthouse'
+        id: lighthouse_audit_mobile
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: https://mpc-tool-ctrlc03.web.app
+          temporaryPublicStorage: true
+
+      - name: '[Desktop] Audit preview URL with Lighthouse'
+        id: lighthouse_audit_desktop
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: https://mpc-tool-ctrlc03.web.app
+          temporaryPublicStorage: true
+          configPath: './.github/.lighthouserc.json'
+
+      - name: Format lighthouse score
+        id: format_lighthouse_score
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const score = res => res >= 90 ? '🟢' : res >= 50 ? '🟠' : '🔴'
+            const formatResult = (res) => Math.round((res * 100))
+
+            const desktop_result = ${{ steps.lighthouse_audit_desktop.outputs.manifest }}[0].summary
+            const desktop_links = ${{ steps.lighthouse_audit_desktop.outputs.links }}
+            Object.keys(desktop_result).forEach(key => desktop_result[key] = formatResult(desktop_result[key]))
+
+            const mobile_result = ${{ steps.lighthouse_audit_mobile.outputs.manifest }}[0].summary
+            const mobile_links = ${{ steps.lighthouse_audit_mobile.outputs.links }}
+            Object.keys(mobile_result).forEach(key => mobile_result[key] = formatResult(mobile_result[key]))
+
+            const comment = [
+                `*⚡️ MACI V1 Ceremony Website Lighthouse Report for the latest commit*`,
+                `[(Desktop) Lighthouse report](${Object.values(desktop_links)[0]}):`,
+                '| Category | Score |',
+                '| --- | --- |',
+                `| ${score(desktop_result.performance)} Performance | ${desktop_result.performance} |`,
+                `| ${score(desktop_result.accessibility)} Accessibility | ${desktop_result.accessibility} |`,
+                `| ${score(desktop_result['best-practices'])} Best practices | ${desktop_result['best-practices']} |`,
+                `| ${score(desktop_result.seo)} SEO | ${desktop_result.seo} |`,
+                `| ${score(desktop_result.pwa)} PWA | ${desktop_result.pwa} |`,
+                ' ',
+                `⚡️ [(Mobile) Lighthouse report](${Object.values(mobile_links)[0]}):`,
+                '| Category | Score |',
+                '| --- | --- |',
+                `| ${score(mobile_result.performance)} Performance | ${mobile_result.performance} |`,
+                `| ${score(mobile_result.accessibility)} Accessibility | ${mobile_result.accessibility} |`,
+                `| ${score(mobile_result['best-practices'])} Best practices | ${mobile_result['best-practices']} |`,
+                `| ${score(mobile_result.seo)} SEO | ${mobile_result.seo} |`,
+                `| ${score(mobile_result.pwa)} PWA | ${mobile_result.pwa} |`,
+                ' ',
+                `Lighthouse ran on [${Object.keys(mobile_links)[0]}](${Object.keys(mobile_links)[0]})`
+            ].join('\n')
+            core.setOutput("comment", comment);
+
+      - name: send telegram message on push
+        uses: appleboy/telegram-action@v0.1.1
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            ${{ steps.format_lighthouse_score.outputs.comment }}
+
