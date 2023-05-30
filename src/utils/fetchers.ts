@@ -29,12 +29,12 @@ let userFirestore: Firestore
     userFirestore = firestoreDatabase
 })()
 
-
 /**
  * Get the live ceremony data. 
  * @return <ILiveCeremonyData> - the live ceremony data.
  */
-export const getLiveCeremonyData = async (): Promise<ILiveCeremonyData> => {
+export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCeremonyData> => {
+    // default data
     const ceremonyData: ILiveCeremonyData = {
         alive: false,
         circuitSequence: 0,
@@ -45,15 +45,61 @@ export const getLiveCeremonyData = async (): Promise<ILiveCeremonyData> => {
         contributionStep: 'None'
     }
 
-    const status = getCeremonyState()
+    const status = await getCeremonyState()
     // if the ceremony is not live then let's return the default ceremony data
     if (!status) return ceremonyData
 
-    const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
+    // get the circuit doc and its data
+    const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    const circuitData = circuit.data()
+    if (!circuitData) return ceremonyData
 
-    console.log(circuits)
+    // sequence position and name of the circuit
+    const { sequencePosition, name } = circuitData
 
-    return ceremonyData 
+    // calculate the average contribution time for the circuit
+    const contributionTime = await getAvgContributionTime(circuitId)
+
+    // check if we have anyone currently contributing
+    const { currentContributor } = circuitData.waitingQueue 
+
+    // if there is no one contributing we return the data that we have so far
+    if (currentContributor !== '') {
+        const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), currentContributor)
+        const participantData = participantDoc.data()
+        if (!participantData) return ceremonyData
+    
+        const { contributionStep, contributionStartedAt } = participantData
+    
+        const currentTime = new Date().valueOf()
+        const endTime = contributionStartedAt + contributionTime
+
+    
+        // time left is current time - (when the contribution started + how long it 
+        // takes to contribute in average)
+        const timeLeft = endTime > currentTime ? endTime - currentTime : 0
+        // time spent is current time - when the contribution started
+        const timeSpent = currentTime - contributionStartedAt
+    
+        return {
+            alive: status,
+            circuitSequence: sequencePosition,
+            currentContributor: currentContributor ? currentContributor : 'None',
+            circuitName: name,
+            ETA: timeLeft > 1000 ? `${Math.floor(timeLeft / 1000)} sec` : `${timeLeft.toString()} ms`,
+            timeSpent: timeSpent > 1000 ? `${Math.floor(timeSpent / 1000)} sec` : `${timeSpent.toString()} ms`,
+            contributionStep: contributionStep
+        }
+    } else 
+        return {
+            alive: status,
+            circuitSequence: sequencePosition,
+            currentContributor: 'None',
+            circuitName: name,
+            ETA: 'N/A',
+            timeSpent: 'N/A',
+            contributionStep: 'N/A'
+        }
 }
 
 /**

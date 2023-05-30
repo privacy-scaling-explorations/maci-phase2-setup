@@ -1,23 +1,44 @@
-import { Stack, Text, Tag, Circle, Box, Button } from '@chakra-ui/react'
+import { Stack, Text, Tag, Circle, Box, Button, Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
 import Layer17 from '../../assets/Layer_1-7.png'
 import SpiralWire from '../../assets/Isolation_Mode.png'
-import { ILiveCeremonyData } from '../../utils/interfaces'
-import { getLiveCeremonyData } from '../../utils/fetchers'
+import { ICircuit, ILiveCeremonyData } from '../../utils/interfaces'
+import { getAllCircuitsInfo, getLiveCeremonyData } from '../../utils/fetchers'
+import { getEllipsisTxt } from '../../utils/formatting'
 
 export const LiveCeremony = (): React.JSX.Element => {
 
     const [liveCeremonyData, setLiveCeremonyData] = useState<ILiveCeremonyData>({} as ILiveCeremonyData)
+    const [selectedCircuit, setSelectedCircuit] = useState<string>("")
+    const [circuits, setCircuits] = useState<ICircuit[]>([])
 
+    // first fetch 
+    useEffect(() => {
+        const _getAllCircuits = async () => {
+            // get circuit info first
+            const data = await getAllCircuitsInfo()
+            setCircuits(data)
+            // get the live ceremony data for the first circuit
+            if (data.length > 0) {
+                const liveData = await getLiveCeremonyData(data.at(0)?.id!)
+                setLiveCeremonyData(liveData)
+            }
+        }
+
+        _getAllCircuits().catch()
+    }, [])
+
+    // every time that a new circuit is selected
     useEffect(() => {
         const _getLiveCeremonyData = async () => {
-            const data = await getLiveCeremonyData()
+            const data = await getLiveCeremonyData(selectedCircuit)
             setLiveCeremonyData(data)
         }
 
-        _getLiveCeremonyData().catch()
-    }, [])
+        if (selectedCircuit !== "") _getLiveCeremonyData().catch()
+        
+    }, [selectedCircuit])
 
     return (
         <Stack
@@ -67,6 +88,31 @@ export const LiveCeremony = (): React.JSX.Element => {
                     justify="flex-start"
                     align="flex-start"
                     spacing="0px">
+                    <Stack padding="20px">
+                        {circuits.length > 0 && (
+                            <Select
+                                borderWidth="1px"
+                                borderColor={MaciBlack}
+                                background={MaciWhite}
+                                value={selectedCircuit}
+                                placeholder='Select a circuit'
+                                onChange={(e: any) =>
+                                    setSelectedCircuit(e.target.value)
+                                }>
+                                {circuits.map(
+                                    (circuit: ICircuit, index: number) => {
+                                        return (
+                                            <option
+                                                key={index}
+                                                value={circuit.id}>
+                                                {circuit.name}
+                                            </option>
+                                        )
+                                    }
+                                )}
+                            </Select>
+                        )}
+                    </Stack>
                     <Box
                         borderRadius="35px"
                         width="69px"
@@ -129,11 +175,15 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
-                        {liveCeremonyData.currentContributor}
+                        {
+                            liveCeremonyData.currentContributor !== 'None' ? 
+                            getEllipsisTxt(liveCeremonyData.currentContributor, 6) : 
+                            liveCeremonyData.currentContributor
+                        }
                         </Text>
                     </Stack>
                     <Stack
@@ -161,7 +211,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
@@ -193,7 +243,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
@@ -233,7 +283,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
@@ -265,7 +315,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
@@ -297,7 +347,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         fontFamily="Poppins"
                         lineHeight="1.29"
                         fontWeight="medium"
-                        fontSize="28px"
+                        fontSize="20px"
                         color={MaciBlack}
                         alignSelf="stretch"
                         >
@@ -338,7 +388,7 @@ export const LiveCeremony = (): React.JSX.Element => {
                         overflow="hidden"
                         width="137px"
                         height="137px"
-                        marginTop="30%!important"
+                        marginTop="10%!important"
                         backgroundImage={SpiralWire}
                         backgroundSize="50%"
                         backgroundPosition='center center'
