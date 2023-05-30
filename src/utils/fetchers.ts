@@ -217,8 +217,8 @@ export const getFailedContributions = async (circuitId: string): Promise<number>
     if (!circuitData) return 0
 
     const { waitingQueue } = circuitData
-    return waitingQueue.contributors.failedContributions
-        ? waitingQueue.contributors.failedContributions
+    return waitingQueue.failedContributions
+        ? waitingQueue.failedContributions
         : 0
 }
 

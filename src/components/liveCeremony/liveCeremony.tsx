@@ -1,4 +1,4 @@
-import { Stack, Text, Tag, Circle, Box, Button, Select } from '@chakra-ui/react'
+import { Stack, Text, Circle, Box, Button, Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
 import Layer17 from '../../assets/Layer_1-7.png'
