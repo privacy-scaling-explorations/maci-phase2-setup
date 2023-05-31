@@ -17,17 +17,12 @@ import SpriralGlassYellow from '../assets/Spiral_glass_yellow.png'
 import SpiralWire from '../assets/Isolation_Mode.png'
 import { NavBar } from '../components/navbar/navbar'
 import { VerificationTranscript } from '../components/verificationTrascripts/verificationTranscripts'
+import { emptyAverageStats } from '../utils/constants'
 
 export const Home = () => {
-    const [averages, setAverages] = useState<IAvgStats>({
-        waitingQueue: 0,
-        failedContributions: 0,
-        completedContributions: 0,
-        avgContributionTime: 0,
-        diskSpaceRequired: '0',
-        diskSpaceUnit: 'KB'
-    })
+
     // state variables
+    const [averages, setAverages] = useState<IAvgStats>(emptyAverageStats)
     const [circuits, setCircuits] = useState<ICircuit[]>([])
     const [totalContributions, setTotalContributions] = useState<number>(0)
     const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
@@ -588,7 +583,7 @@ export const Home = () => {
                                             letterSpacing="0.01em"
                                             color={MaciBlack}
                                             alignSelf="stretch">
-                                            {`${averages.avgContributionTime} min`}
+                                            {`${averages.avgContributionTime}`}
                                         </Text>
                                     </Stack>
                                     <Stack

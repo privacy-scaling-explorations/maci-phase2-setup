@@ -1,5 +1,5 @@
-import { MACI_CEREMONY_ID, bucketUrl } from './constants'
-import { IAvgStats, ICircuit, ITranscript } from './interfaces'
+import { MACI_CEREMONY_ID, bucketUrl, emptyAverageStats, emptyLiveCeremonyData } from './constants'
+import { IAvgStats, ICircuit, ILiveCeremonyData, ITranscript } from './interfaces'
 import { Firestore, where } from 'firebase/firestore'
 import axios from 'axios'
 import {
@@ -15,9 +15,10 @@ import {
     fromQueryToFirebaseDocumentInfo,
     getParticipantsCollectionPath
 } from '@p0tion/actions'
+import { getSecondsMinutesHoursFromMillis, timingToString } from './formatting'
 
 let userFirestore: Firestore
-;(async () => {
+(async () => {
     const { firestoreDatabase } = await initializeFirebaseCoreServices(
         process.env.REACT_APP_FIREBASE_API_KEY!,
         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN!,
@@ -28,6 +29,77 @@ let userFirestore: Firestore
 
     userFirestore = firestoreDatabase
 })()
+
+/**
+ * Get the live ceremony data. 
+ * @return <ILiveCeremonyData> - the live ceremony data.
+ */
+export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCeremonyData> => {
+    const status = await getCeremonyState()
+    // if the ceremony is not live then let's return the default ceremony data
+    if (!status) return emptyLiveCeremonyData
+
+    // get the circuit doc and its data
+    const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    const circuitData = circuit.data()
+    if (!circuitData) return emptyLiveCeremonyData
+
+    // sequence position and name of the circuit
+    const { sequencePosition, name } = circuitData
+
+    // calculate the average contribution time for the circuit
+    const contributionTime = await getAvgContributionTime(circuitId)
+
+    // check if we have anyone currently contributing
+    const { currentContributor } = circuitData.waitingQueue 
+
+    // if there is no one contributing we return the data that we have so far
+    // if there is, we calculate the rest of the values
+    if (!!currentContributor) {
+        const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), currentContributor)
+        const participantData = participantDoc.data()
+        if (!participantData) return {
+            alive: status,
+            circuitSequence: sequencePosition,
+            currentContributor: 'None',
+            circuitName: name,
+            ETA: timingToString(getSecondsMinutesHoursFromMillis(0)),
+            timeSpent: timingToString(getSecondsMinutesHoursFromMillis(0)),
+            contributionStep: 'N/A'
+        }
+    
+        const { contributionStep, contributionStartedAt } = participantData
+    
+        const currentTime = new Date().valueOf()
+        const endTime = contributionStartedAt + contributionTime
+
+    
+        // time left is current time - (when the contribution started + how long it 
+        // takes to contribute in average)
+        const timeLeft = endTime > currentTime ? endTime - currentTime : 0
+        // time spent is current time - when the contribution started
+        const timeSpent = currentTime - contributionStartedAt
+    
+        return {
+            alive: status,
+            circuitSequence: sequencePosition,
+            currentContributor: currentContributor ? currentContributor : 'None',
+            circuitName: name,
+            ETA: timingToString(getSecondsMinutesHoursFromMillis(timeLeft)),
+            timeSpent: timingToString(getSecondsMinutesHoursFromMillis(timeSpent)),
+            contributionStep: contributionStep
+        }
+    } else 
+        return {
+            alive: status,
+            circuitSequence: sequencePosition,
+            currentContributor: 'None',
+            circuitName: name,
+            ETA: timingToString(getSecondsMinutesHoursFromMillis(0)),
+            timeSpent: timingToString(getSecondsMinutesHoursFromMillis(0)),
+            contributionStep: 'N/A'
+        }
+}
 
 /**
  * Get all circuits info for a ceremony
@@ -46,15 +118,16 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
         const avgContributionTime = await getAvgContributionTime(id)
         const diskSpaceRequired = await getDiskSpaceRequired(id)
         const currentContributor = await getCurrentContributor(id)
+
         circuitInfo.push({
-            id,
-            name,
-            waitingQueue,
-            failedContributions,
-            completedContributions,
-            avgContributionTime,
-            diskSpaceRequired,
-            currentContributor
+            id: id,
+            name: name,
+            waitingQueue: waitingQueue,
+            failedContributions: failedContributions,
+            completedContributions: completedContributions,
+            avgContributionTime: timingToString(getSecondsMinutesHoursFromMillis(avgContributionTime)),
+            diskSpaceRequired: diskSpaceRequired,
+            currentContributor: currentContributor
         })
     }
     return circuitInfo
@@ -68,14 +141,7 @@ export const getAverageData = async (): Promise<IAvgStats> => {
     const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
 
     if (circuits.length === 0)
-        return {
-            waitingQueue: 0,
-            failedContributions: 0,
-            completedContributions: 0,
-            avgContributionTime: 0,
-            diskSpaceRequired: '0',
-            diskSpaceUnit: 'GB'
-        }
+        return emptyAverageStats
 
     let totalWaitingQueue = 0
     let totalFailedContributions = 0
@@ -104,7 +170,7 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         waitingQueue: Math.round(totalWaitingQueue / circuits.length),
         failedContributions: totalFailedContributions,
         completedContributions: Math.round(totalCompletedContributions / circuits.length),
-        avgContributionTime: parseFloat((totalAvgContributionTime / 1000 / 60).toFixed(2)),
+        avgContributionTime: timingToString(getSecondsMinutesHoursFromMillis(totalAvgContributionTime)),
         diskSpaceRequired: diskSpaceRequired.toString(),
         diskSpaceUnit: diskSpaceUnit
     }
@@ -144,8 +210,8 @@ export const getFailedContributions = async (circuitId: string): Promise<number>
     if (!circuitData) return 0
 
     const { waitingQueue } = circuitData
-    return waitingQueue.contributors.failedContributions
-        ? waitingQueue.contributors.failedContributions
+    return waitingQueue.failedContributions
+        ? waitingQueue.failedContributions
         : 0
 }
 
