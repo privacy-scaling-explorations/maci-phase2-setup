@@ -5,11 +5,12 @@ import Layer17 from '../../assets/Layer_1-7.png'
 import SpiralWire from '../../assets/Isolation_Mode.png'
 import { ICircuit, ILiveCeremonyData } from '../../utils/interfaces'
 import { getAllCircuitsInfo, getLiveCeremonyData } from '../../utils/fetchers'
-import { getEllipsisTxt } from '../../utils/formatting'
+import { getEllipsisTxt, getSecondsMinutesHoursFromMillis, timingToString } from '../../utils/formatting'
+import { emptyLiveCeremonyData } from '../../utils/constants'
 
 export const LiveCeremony = (): React.JSX.Element => {
 
-    const [liveCeremonyData, setLiveCeremonyData] = useState<ILiveCeremonyData>({} as ILiveCeremonyData)
+    const [liveCeremonyData, setLiveCeremonyData] = useState<ILiveCeremonyData>(emptyLiveCeremonyData)
     const [selectedCircuit, setSelectedCircuit] = useState<string>("")
     const [circuits, setCircuits] = useState<ICircuit[]>([])
 
