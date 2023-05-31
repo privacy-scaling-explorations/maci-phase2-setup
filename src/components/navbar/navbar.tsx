@@ -1,12 +1,19 @@
 import { Stack, Text } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-import { MaciBlack, MaciWhite } from '../../utils/colors'
 import React, { useEffect, useState } from 'react'
+import { MaciBlack, MaciWhite } from '../../utils/colors'
 import { getTotalNumberOfContributions } from '../../utils/fetchers'
+import { INavBarProps } from '../../utils/interfaces'
 
-export const NavBar = (props: any): React.JSX.Element => {
+/**
+ * The Navigation bar for the app. 
+ * @param <INavBarProps> - the props for the NavBar component
+ * @returns <React.JSX.Element> - the NavBar component
+ */
+export const NavBar = (props: INavBarProps): React.JSX.Element => {
     const [totalContributions, setTotalContributions] = useState(0)
 
+    // Fetch the total number of contributions at load time
     useEffect(() => {
         const _getTotalContributions = async () => {
             const total = await getTotalNumberOfContributions()

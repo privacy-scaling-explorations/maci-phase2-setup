@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react"
+
 /**
  * @interface ICircuit
  * @member {string} id - the circuit id
@@ -88,4 +90,48 @@ export interface ITiming {
     minutes: number
     hours: number
     days: number
+}
+
+/**
+ * @interface INavBarProps
+ * @member {string} background - the background color of the NavBar
+ */
+export interface INavBarProps {
+    background: string
+}
+
+/**
+ * @interface ISearchBarProps - the props for the SearchBar component
+ * @member {string} placeholder - the placeholder text for the search bar
+ * @member {Dispatch<SetStateAction<string>>} setSearch - the function to set the search text
+ */
+export interface ISearchBarProps {
+    placeholder: string
+    setSearch: Dispatch<SetStateAction<string>>
+}
+
+/**
+ * @interface ITimestampBoxProps
+ * @member {Dispatch<SetStateAction<number>>} setTimestamp - a function which sets the timestamp
+ */
+export interface ITimestampBoxProps {
+    setTimestamp: Dispatch<SetStateAction<number>>
+}
+
+/**
+ * @interface IVerificationTranscriptProps
+ * @member {ICircuit[]} circuits - the circuits to display
+ */
+export interface IVerificationTranscriptProps {
+    circuits: ICircuit[]
+}
+
+/**
+ * @interface IQA
+ * @member {string} question - the question
+ * @member {string} answer - the answer
+ */
+export interface IQA {
+    question: string
+    answer: string
 }

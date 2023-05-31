@@ -1,8 +1,14 @@
 import React from 'react'
 import { Stack, Box, Text } from '@chakra-ui/react'
 import { MaciBlack, MaciLightYellow, MaciWhite } from '../../utils/colors'
+import { ITimestampBoxProps } from '../../utils/interfaces'
 
-export const TimestampBox = (props: any): React.JSX.Element => {
+/**
+ * A component which renders the timestamp box for the instructions video
+ * @param <ITimestampBoxProps> - the props for the TimestampBox component (see interfaces.tsx)
+ * @returns <React.JSX.Element> - the TimestampBox component
+ */
+export const TimestampBox = (props: ITimestampBoxProps): React.JSX.Element => {
     return (
         <Stack justify="flex-start" align="flex-start" spacing="0px">
             <Stack

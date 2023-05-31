@@ -1,17 +1,25 @@
 import { Stack, Text, Circle, Box, Button, Select } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
-import Layer17 from '../../assets/Layer_1-7.png'
-import SpiralWire from '../../assets/Isolation_Mode.png'
 import { ICircuit, ILiveCeremonyData } from '../../utils/interfaces'
 import { getAllCircuitsInfo, getLiveCeremonyData } from '../../utils/fetchers'
-import { getEllipsisTxt, getSecondsMinutesHoursFromMillis, timingToString } from '../../utils/formatting'
+import { getEllipsisTxt } from '../../utils/formatting'
 import { emptyLiveCeremonyData } from '../../utils/constants'
 
+import Layer17 from '../../assets/Layer_1-7.png'
+import SpiralWire from '../../assets/Isolation_Mode.png'
+
+/**
+ * Component that displays the live ceremony data for a given circuit.
+ * @returns <React.JSX.Element> - the Live Ceremony component
+ */
 export const LiveCeremony = (): React.JSX.Element => {
 
+    // the object holding the live ceremony data to display
     const [liveCeremonyData, setLiveCeremonyData] = useState<ILiveCeremonyData>(emptyLiveCeremonyData)
+    // the id of the circuit to display the information for 
     const [selectedCircuit, setSelectedCircuit] = useState<string>("")
+    // the list of all circuits for the ceremony
     const [circuits, setCircuits] = useState<ICircuit[]>([])
 
     // first fetch 
@@ -30,14 +38,14 @@ export const LiveCeremony = (): React.JSX.Element => {
         _getAllCircuits().catch()
     }, [])
 
-    // every time that a new circuit is selected
+    // every time that a new circuit is selected we fetch fresh data
     useEffect(() => {
         const _getLiveCeremonyData = async () => {
             const data = await getLiveCeremonyData(selectedCircuit)
             setLiveCeremonyData(data)
         }
 
-        if (selectedCircuit !== "") _getLiveCeremonyData().catch()
+        if (!!selectedCircuit) _getLiveCeremonyData().catch()
         
     }, [selectedCircuit])
 

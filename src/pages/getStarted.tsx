@@ -1,16 +1,24 @@
 import { Stack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import { MaciBlack, MaciLightYellow, MaciYellow } from '../utils/colors'
-import VectorDown from '../assets/Vector.svg'
-import AuthGitHubImg from '../assets/authGitHub.svg'
-import ContributeImg from '../assets/contributeImg.svg'
 import { NavBar } from '../components/navbar/navbar'
-import ContributeTitle from '../assets/contributionsteps.svg'
 import { TimestampBox } from '../components/timestampBox/timestampBox'
 import { LiveCeremony } from '../components/liveCeremony/liveCeremony'
 
+import VectorDown from '../assets/Vector.svg'
+import AuthGitHubImg from '../assets/authGitHub.svg'
+import ContributeImg from '../assets/contributeImg.svg'
+import ContributeTitle from '../assets/contributionsteps.svg'
+
+/**
+ * The Get-Started page of the website.
+ * @returns <React.JSX.Element> - the GetStarted component
+ */
+
 export const GetStarted = (): React.JSX.Element => {
-    const [timestamp, setTimestamp] = useState('300')
+    // the timestamp to start the video at
+    const [timestamp, setTimestamp] = useState(0)
+
     return (
         <>
             <NavBar background={MaciLightYellow} />

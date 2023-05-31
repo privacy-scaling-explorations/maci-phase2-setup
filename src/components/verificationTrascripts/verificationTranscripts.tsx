@@ -24,8 +24,9 @@ import {
     ModalCloseButton,
     ModalBody
 } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
 import { SearchBar } from '../searchBar/searchBar'
-import { ICircuit, ITranscript } from '../../utils/interfaces'
+import { ICircuit, ITranscript, IVerificationTranscriptProps } from '../../utils/interfaces'
 import {
     MaciBlack,
     MaciLightBase,
@@ -33,28 +34,45 @@ import {
     MaciWhite,
     MaciYellow
 } from '../../utils/colors'
-import React, { useEffect, useState } from 'react'
 import { getAllVerificationTranscripts } from '../../utils/fetchers'
 import { getEllipsisTxt } from '../../utils/formatting'
+
 import Layer17 from '../../assets/Layer_1-7.png'
 
-export const VerificationTranscript = (props: any): React.JSX.Element => {
+/**
+ * A component to display the verification transcripts in a table
+ * @param <IVerificationTranscriptProps> - the props for the VerificationTranscript component (see interfaces.tsx)
+ * @returns <React.JSX.Element> - the VerificationTranscript component
+ */
+export const VerificationTranscript = (props: IVerificationTranscriptProps): React.JSX.Element => {
     // how many items we show per page
-    const itemsPerPage = 6
-    const [transcripts, setTranscripts] = useState<ITranscript[]>([])
-    const [startIndex, setStartIndex] = useState<number>(0)
-    const [endIndex, setEndIndex] = useState<number>(itemsPerPage)
-    const [searchTerm, setSearchTerm] = useState<string>('')
-    const [selectedCircuit, setSelectedCircuit] = useState<string>('')
-    const [selectedIndex, setSelectedIndex] = useState<number>(0)
+    const itemsPerPage = 20
 
+    // all of the transcripts for the ceremony
+    const [transcripts, setTranscripts] = useState<ITranscript[]>([])
+    // the first index of the transcripts to show
+    const [startIndex, setStartIndex] = useState<number>(0)
+    // the last index of the transcripts to show
+    const [endIndex, setEndIndex] = useState<number>(itemsPerPage)
+    // the search term to filter transcripts by
+    const [searchTerm, setSearchTerm] = useState<string>('')
+    // the circuit to filter transcripts by
+    const [selectedCircuit, setSelectedCircuit] = useState<string>('')
+    // the index of the transcript to show in the modal
+    const [selectedIndex, setSelectedIndex] = useState<number>(0)
+    // whether the modal is open or not
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
+    /**
+     * Set the index of the transcript and open the modal
+     * @param index <number> - the index of the transcript to show in the modal
+     */
     const onOpen = (index: number) => {
         setSelectedIndex(index)
         setIsOpen(true)
     }
 
+    // on mount, get all transcripts
     useEffect(() => {
         const _getTranscripts = async () => {
             const response = await getAllVerificationTranscripts()
@@ -64,7 +82,10 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         _getTranscripts().catch()
     }, [])
 
-    // change which items to show
+    /**
+     * Change the table view 
+     * @param index <number> - the page index
+     */
     const paginate = (index: number) => {
         if (index === 1) {
             setStartIndex(0)
@@ -75,6 +96,10 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         }
     }
 
+    /**
+     * Download a transcript as a text file
+     * @param transcriptIndex <number> - the index of the transcript to download
+     */
     const download = (transcriptIndex: number) => {
         const transcript = transcripts[transcriptIndex]
         const url = window.URL.createObjectURL(new Blob([transcript.content]))
@@ -90,12 +115,24 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         document.body.removeChild(link)
     }
 
-    const checkByCircuit = (transcript: ITranscript) => {
+    /**
+     * The filter function to check whether a transcript should be shown 
+     * based on the circuit name 
+     * @param transcript <ITranscript> - the transcript to check
+     * @returns <boolean> - whether the transcript matches the selected circuit
+     */
+    const checkByCircuit = (transcript: ITranscript): boolean => {
         if (selectedCircuit === '') return true
         return transcript.circuitName === selectedCircuit
     }
 
-    const checkSearch = (transcript: ITranscript) => {
+    /**
+     * The filter function to check whether a transcript should be shown
+     * based on the search term
+     * @param transcript <ITranscript> - the transcript to check
+     * @returns <boolean> - whether the transcript matches the search term
+     */
+    const checkSearch = (transcript: ITranscript): boolean => {
         if (searchTerm === '') return true
         // if it's alphanumerical it's the zkey index
         if (searchTerm.match(/^[0-9]+$/)) {
