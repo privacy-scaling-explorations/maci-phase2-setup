@@ -1,67 +1,19 @@
 diff --git a/dist/index.mjs b/dist/index.mjs
-index 3448aa1ae383c909cb52a4aa036e8b1e84cac66d..42c2175dd5292bdbfdddb424b37bed8bc8599379 100644
+index 7a43b4de11f0d142bd774a77fe2de4374b7a11e7..63340eb77e76349d6ad2797107c82d9fe13aa853 100644
 --- a/dist/index.mjs
 +++ b/dist/index.mjs
-@@ -19,8 +19,9 @@ import { utils } from 'ffjavascript';
+@@ -19,8 +19,8 @@ import { utils } from 'ffjavascript';
  import winston from 'winston';
  import { initializeApp } from 'firebase/app';
  import { signInWithCredential, initializeAuth, getAuth } from 'firebase/auth';
 -import { ContractFactory } from 'ethers';
 -import solc from 'solc';
-+// PATCH: avoid solc on frontend (WebWorkers 4kb issue).
 +// import { ContractFactory } from 'ethers';
 +// import solc from 'solc';
  
  // Main part for the Hermez Phase 1 Trusted Setup URLs to download PoT files.
  const potFileDownloadMainUrl = `https://hermez.s3-eu-west-1.amazonaws.com/`;
-@@ -374,7 +375,7 @@ const checkIfObjectExist = async (functions, bucketName, objectKey) => {
-  * @returns <Promise<void>> -
-  */
- const verifyContribution = async (functions, ceremonyId, circuit, // any just to avoid breaking the tests.
--bucketName, contributorOrCoordinatorIdentifier, verifyContributionCloudFunctionEndpoint) => {
-+    bucketName, contributorOrCoordinatorIdentifier, verifyContributionCloudFunctionEndpoint) => {
-     const cf = httpsCallableFromURL(functions, verifyContributionCloudFunctionEndpoint, {
-         timeout: 3600000 // max timeout 60 minutes.
-     });
-@@ -590,7 +591,7 @@ const multiPartUpload = async (cloudFunctions, bucketName, objectKey, localFileP
-     const chunksWithUrlsZkey = await getChunksAndPreSignedUrls(cloudFunctions, bucketName, objectKey, localFilePath, multiPartUploadId, configStreamChunkSize, ceremonyId);
-     // Step (2).
-     const partNumbersAndETagsZkey = await uploadParts(chunksWithUrlsZkey, mime.lookup(localFilePath), // content-type.
--    cloudFunctions, ceremonyId, alreadyUploadedChunks);
-+        cloudFunctions, ceremonyId, alreadyUploadedChunks);
-     // Step (3).
-     await completeMultiPartUpload(cloudFunctions, bucketName, objectKey, multiPartUploadId, partNumbersAndETagsZkey, ceremonyId);
- };
-@@ -835,11 +836,11 @@ const blake512FromPath = async (path) => {
-     const hash = await new Promise((resolve) => {
-         fs.createReadStream(path)
-             .on("data", (chunk) => {
--            blake.blake2bUpdate(context, chunk);
--        })
-+                blake.blake2bUpdate(context, chunk);
-+            })
-             .on("end", () => {
--            resolve(toHex(blake.blake2bFinal(context)));
--        });
-+                resolve(toHex(blake.blake2bFinal(context)));
-+            });
-     });
-     return hash;
- };
-@@ -925,9 +926,9 @@ const extractPoTFromFilename = (potCompleteFilename) => Number(potCompleteFilena
-  * @param str <string> - the arbitrary string from which to extract the prefix.
-  * @returns <string> - the resulting prefix.
-  */
--const extractPrefix = (str) => 
--// eslint-disable-next-line no-useless-escape
--str.replace(/[`\s~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "-").toLowerCase();
-+const extractPrefix = (str) =>
-+    // eslint-disable-next-line no-useless-escape
-+    str.replace(/[`\s~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "-").toLowerCase();
- /**
-  * Automate the generation of an entropy for a contribution.
-  * @dev Took inspiration from here https://github.com/glamperd/setup-mpc-ui/blob/master/client/src/state/Compute.tsx#L112.
-@@ -1554,49 +1555,50 @@ const verifyGROTH16ProofOnChain = async (contract, proof) => {
+@@ -1554,49 +1554,49 @@ const verifyGROTH16ProofOnChain = async (contract, proof) => {
      const res = await contract.verifyProof(proof.arg1, proof.arg2, proof.arg3, proof.arg4);
      return res;
  };
@@ -108,7 +60,6 @@ index 3448aa1ae383c909cb52a4aa036e8b1e84cac66d..42c2175dd5292bdbfdddb424b37bed8b
 -    await contract.deployed();
 -    return contract;
 -};
-+// PATCH
 +// /**
 +//  * Compiles a contract given a path
 +//  * @param contractPath <string> path to the verifier contract
@@ -155,11 +106,9 @@ index 3448aa1ae383c909cb52a4aa036e8b1e84cac66d..42c2175dd5292bdbfdddb424b37bed8b
  /**
   * Verify a ceremony validity
   * 1. Download all artifacts
-@@ -1666,12 +1668,13 @@ const verifyCeremony = async (functions, firestore, ceremonyPrefix, outputDirect
-         const isProofValid = await verifyGROTH16Proof(vKeyLocalPath, publicSignals, proof);
+@@ -1667,11 +1667,11 @@ const verifyCeremony = async (functions, firestore, ceremonyPrefix, outputDirect
          if (!isProofValid)
              throw new Error(`Could not verify the proof for Circuit ${ceremonyArtifact.circuitPrefix}. Please check that the artifacts are correct as well as the inputs to the circuit, and try again.`);
-+        // PATCH
          // 8. deploy Verifier contract and verify the proof on-chain
 -        const verifierContract = await deployVerifierContract(verifierLocalPath, signer);
 -        const formattedProof = await formatSolidityCalldata(publicSignals, proof);
@@ -174,76 +123,26 @@ index 3448aa1ae383c909cb52a4aa036e8b1e84cac66d..42c2175dd5292bdbfdddb424b37bed8b
      }
  };
  
-@@ -1861,4 +1864,4 @@ var TestingEnvironment;
+@@ -1861,4 +1861,4 @@ var TestingEnvironment;
      TestingEnvironment["PRODUCTION"] = "PRODUCTION";
  })(TestingEnvironment || (TestingEnvironment = {}));
  
 -export { CeremonyState, CeremonyTimeoutType, CeremonyType, ParticipantContributionStep, ParticipantStatus, RequestType, TestingEnvironment, TimeoutType, autoGenerateEntropy, blake512FromPath, checkAndPrepareCoordinatorForFinalization, checkIfObjectExist, checkParticipantForCeremony, commonTerms, compareCeremonyArtifacts, compareHashes, compileContract, completeMultiPartUpload, computeSHA256ToHex, computeSmallestPowersOfTauForCircuit, convertBytesOrKbToGb, createCustomLoggerForFile, createS3Bucket, downloadAllCeremonyArtifacts, downloadCeremonyArtifact, exportVerifierAndVKey, exportVerifierContract, exportVkey, extractPoTFromFilename, extractPrefix, extractR1CSInfoValueForGivenKey, finalContributionIndex, finalizeCeremony, finalizeCircuit, formatSolidityCalldata, formatZkeyIndex, fromQueryToFirebaseDocumentInfo, generateGROTH16Proof, generateGetObjectPreSignedUrl, generatePreSignedUrlsParts, generateValidContributionsAttestation, generateZkeyFromScratch, genesisZkeyIndex, getAllCollectionDocs, getBucketName, getCeremonyCircuits, getCircuitBySequencePosition, getCircuitContributionsFromContributor, getCircuitsCollectionPath, getClosedCeremonies, getContributionsCollectionPath, getContributionsValidityForContributor, getCurrentActiveParticipantTimeout, getCurrentFirebaseAuthUser, getDocumentById, getOpenedCeremonies, getParticipantsCollectionPath, getPotStorageFilePath, getPublicAttestationPreambleForContributor, getR1CSInfo, getR1csStorageFilePath, getTimeoutsCollectionPath, getTranscriptStorageFilePath, getVerificationKeyStorageFilePath, getVerifierContractStorageFilePath, getWasmStorageFilePath, getZkeyStorageFilePath, githubReputation, initializeFirebaseCoreServices, isCoordinator, multiPartUpload, numExpIterations, p256, permanentlyStoreCurrentContributionTimeAndHash, potFileDownloadMainUrl, potFilenameTemplate, progressToNextCircuitForContribution, progressToNextContributionStep, queryCollection, resumeContributionAfterTimeoutExpiration, setupCeremony, signInToFirebaseWithCredentials, solidityVersion, temporaryStoreCurrentContributionMultiPartUploadId, temporaryStoreCurrentContributionUploadedChunkData, toHex, verificationKeyAcronym, verifierSmartContractAcronym, verifyCeremony, verifyContribution, verifyGROTH16Proof, verifyGROTH16ProofOnChain, verifyZKey };
 +export { CeremonyState, CeremonyTimeoutType, CeremonyType, ParticipantContributionStep, ParticipantStatus, RequestType, TestingEnvironment, TimeoutType, autoGenerateEntropy, blake512FromPath, checkAndPrepareCoordinatorForFinalization, checkIfObjectExist, checkParticipantForCeremony, commonTerms, compareCeremonyArtifacts, compareHashes, completeMultiPartUpload, computeSHA256ToHex, computeSmallestPowersOfTauForCircuit, convertBytesOrKbToGb, createCustomLoggerForFile, createS3Bucket, downloadAllCeremonyArtifacts, downloadCeremonyArtifact, exportVerifierAndVKey, exportVerifierContract, exportVkey, extractPoTFromFilename, extractPrefix, extractR1CSInfoValueForGivenKey, finalContributionIndex, finalizeCeremony, finalizeCircuit, formatSolidityCalldata, formatZkeyIndex, fromQueryToFirebaseDocumentInfo, generateGROTH16Proof, generateGetObjectPreSignedUrl, generatePreSignedUrlsParts, generateValidContributionsAttestation, generateZkeyFromScratch, genesisZkeyIndex, getAllCollectionDocs, getBucketName, getCeremonyCircuits, getCircuitBySequencePosition, getCircuitContributionsFromContributor, getCircuitsCollectionPath, getClosedCeremonies, getContributionsCollectionPath, getContributionsValidityForContributor, getCurrentActiveParticipantTimeout, getCurrentFirebaseAuthUser, getDocumentById, getOpenedCeremonies, getParticipantsCollectionPath, getPotStorageFilePath, getPublicAttestationPreambleForContributor, getR1CSInfo, getR1csStorageFilePath, getTimeoutsCollectionPath, getTranscriptStorageFilePath, getVerificationKeyStorageFilePath, getVerifierContractStorageFilePath, getWasmStorageFilePath, getZkeyStorageFilePath, githubReputation, initializeFirebaseCoreServices, isCoordinator, multiPartUpload, numExpIterations, p256, permanentlyStoreCurrentContributionTimeAndHash, potFileDownloadMainUrl, potFilenameTemplate, progressToNextCircuitForContribution, progressToNextContributionStep, queryCollection, resumeContributionAfterTimeoutExpiration, setupCeremony, signInToFirebaseWithCredentials, solidityVersion, temporaryStoreCurrentContributionMultiPartUploadId, temporaryStoreCurrentContributionUploadedChunkData, toHex, verificationKeyAcronym, verifierSmartContractAcronym, verifyCeremony, verifyContribution, verifyGROTH16Proof, verifyGROTH16ProofOnChain, verifyZKey };
 diff --git a/dist/index.node.js b/dist/index.node.js
-index 1d5a56bce03d2efb975c29bac1efcee843eb820e..6f30b699ca5b048411af4cc6d04f4fe87d499f57 100644
+index 34d20d952f5950ca9e0ea1b180c12c5db80db5b7..af79eae38367a5d3e36f6d75051bb44ada4f9fa0 100644
 --- a/dist/index.node.js
 +++ b/dist/index.node.js
-@@ -21,8 +21,9 @@ var ffjavascript = require('ffjavascript');
- var winston = require('winston');
+@@ -22,7 +22,7 @@ var winston = require('winston');
  var app = require('firebase/app');
  var auth = require('firebase/auth');
--var ethers = require('ethers');
+ var ethers = require('ethers');
 -var solc = require('solc');
-+// PATCH: avoid solc on frontend (WebWorkers 4kb issue).
-+// var ethers = require('ethers');
 +// var solc = require('solc');
  
  // Main part for the Hermez Phase 1 Trusted Setup URLs to download PoT files.
  const potFileDownloadMainUrl = `https://hermez.s3-eu-west-1.amazonaws.com/`;
-@@ -376,7 +377,7 @@ const checkIfObjectExist = async (functions$1, bucketName, objectKey) => {
-  * @returns <Promise<void>> -
-  */
- const verifyContribution = async (functions$1, ceremonyId, circuit, // any just to avoid breaking the tests.
--bucketName, contributorOrCoordinatorIdentifier, verifyContributionCloudFunctionEndpoint) => {
-+    bucketName, contributorOrCoordinatorIdentifier, verifyContributionCloudFunctionEndpoint) => {
-     const cf = functions.httpsCallableFromURL(functions$1, verifyContributionCloudFunctionEndpoint, {
-         timeout: 3600000 // max timeout 60 minutes.
-     });
-@@ -592,7 +593,7 @@ const multiPartUpload = async (cloudFunctions, bucketName, objectKey, localFileP
-     const chunksWithUrlsZkey = await getChunksAndPreSignedUrls(cloudFunctions, bucketName, objectKey, localFilePath, multiPartUploadId, configStreamChunkSize, ceremonyId);
-     // Step (2).
-     const partNumbersAndETagsZkey = await uploadParts(chunksWithUrlsZkey, mime.lookup(localFilePath), // content-type.
--    cloudFunctions, ceremonyId, alreadyUploadedChunks);
-+        cloudFunctions, ceremonyId, alreadyUploadedChunks);
-     // Step (3).
-     await completeMultiPartUpload(cloudFunctions, bucketName, objectKey, multiPartUploadId, partNumbersAndETagsZkey, ceremonyId);
- };
-@@ -837,11 +838,11 @@ const blake512FromPath = async (path) => {
-     const hash = await new Promise((resolve) => {
-         fs.createReadStream(path)
-             .on("data", (chunk) => {
--            blake.blake2bUpdate(context, chunk);
--        })
-+                blake.blake2bUpdate(context, chunk);
-+            })
-             .on("end", () => {
--            resolve(toHex(blake.blake2bFinal(context)));
--        });
-+                resolve(toHex(blake.blake2bFinal(context)));
-+            });
-     });
-     return hash;
- };
-@@ -927,9 +928,9 @@ const extractPoTFromFilename = (potCompleteFilename) => Number(potCompleteFilena
-  * @param str <string> - the arbitrary string from which to extract the prefix.
-  * @returns <string> - the resulting prefix.
-  */
--const extractPrefix = (str) => 
--// eslint-disable-next-line no-useless-escape
--str.replace(/[`\s~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "-").toLowerCase();
-+const extractPrefix = (str) =>
-+    // eslint-disable-next-line no-useless-escape
-+    str.replace(/[`\s~!@#$%^&*()|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, "-").toLowerCase();
- /**
-  * Automate the generation of an entropy for a contribution.
-  * @dev Took inspiration from here https://github.com/glamperd/setup-mpc-ui/blob/master/client/src/state/Compute.tsx#L112.
-@@ -1556,49 +1557,50 @@ const verifyGROTH16ProofOnChain = async (contract, proof) => {
+@@ -1556,49 +1556,49 @@ const verifyGROTH16ProofOnChain = async (contract, proof) => {
      const res = await contract.verifyProof(proof.arg1, proof.arg2, proof.arg3, proof.arg4);
      return res;
  };
@@ -290,7 +189,6 @@ index 1d5a56bce03d2efb975c29bac1efcee843eb820e..6f30b699ca5b048411af4cc6d04f4fe8
 -    await contract.deployed();
 -    return contract;
 -};
-+// PATCH
 +// /**
 +//  * Compiles a contract given a path
 +//  * @param contractPath <string> path to the verifier contract
@@ -337,11 +235,9 @@ index 1d5a56bce03d2efb975c29bac1efcee843eb820e..6f30b699ca5b048411af4cc6d04f4fe8
  /**
   * Verify a ceremony validity
   * 1. Download all artifacts
-@@ -1668,12 +1670,13 @@ const verifyCeremony = async (functions, firestore$1, ceremonyPrefix, outputDire
-         const isProofValid = await verifyGROTH16Proof(vKeyLocalPath, publicSignals, proof);
+@@ -1669,11 +1669,11 @@ const verifyCeremony = async (functions, firestore$1, ceremonyPrefix, outputDire
          if (!isProofValid)
              throw new Error(`Could not verify the proof for Circuit ${ceremonyArtifact.circuitPrefix}. Please check that the artifacts are correct as well as the inputs to the circuit, and try again.`);
-+        // PATCH
          // 8. deploy Verifier contract and verify the proof on-chain
 -        const verifierContract = await deployVerifierContract(verifierLocalPath, signer);
 -        const formattedProof = await formatSolidityCalldata(publicSignals, proof);
@@ -356,12 +252,11 @@ index 1d5a56bce03d2efb975c29bac1efcee843eb820e..6f30b699ca5b048411af4cc6d04f4fe8
      }
  };
  
-@@ -1871,7 +1874,8 @@ exports.checkParticipantForCeremony = checkParticipantForCeremony;
+@@ -1871,7 +1871,7 @@ exports.checkParticipantForCeremony = checkParticipantForCeremony;
  exports.commonTerms = commonTerms;
  exports.compareCeremonyArtifacts = compareCeremonyArtifacts;
  exports.compareHashes = compareHashes;
 -exports.compileContract = compileContract;
-+// PATCH
 +// exports.compileContract = compileContract;
  exports.completeMultiPartUpload = completeMultiPartUpload;
  exports.computeSHA256ToHex = computeSHA256ToHex;
