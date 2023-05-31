@@ -34,6 +34,54 @@ Then start locally:
 yarn start
 ```
 
+## 🚀 Deploy to Firebase
+
+First change the project on `.firebaserc` to your project on Firebase:
+
+```json 
+{
+  "projects": {
+    "default": "my-project"
+  }
+}
+```
+
+Then run:
+
+```bash 
+yarn deploy
+```
+
+## 🔎 Code Quality
+
+Run [ESLint](https://eslint.org/) to analyze the code and catch bugs
+
+```bash
+yarn lint
+```
+
+Or to automatically lint the code
+
+```bash
+yarn lint:fix
+```
+
+Run [Prettier](https://prettier.io/) to check formatting rules
+
+```bash
+yarn prettier
+```
+
+Or to automatically format the code
+
+```bash
+yarn prettier:write
+```
+
+### ➕ Contributions
+
+maci-phase2-setup uses [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). The rules are enforced when running `git cz`.
+
 ## License
 
 This repository is released under the [MIT](https://github.com/privacy-scaling-explorations/maci-phase2-setup/blob/main/LICENSE) License.
