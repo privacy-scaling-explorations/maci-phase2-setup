@@ -83,7 +83,7 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
     }, [])
 
     /**
-     * Change the table view 
+     * Change the table view
      * @param index <number> - the page index
      */
     const paginate = (index: number) => {
@@ -116,8 +116,8 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
     }
 
     /**
-     * The filter function to check whether a transcript should be shown 
-     * based on the circuit name 
+     * The filter function to check whether a transcript should be shown
+     * based on the circuit name
      * @param transcript <ITranscript> - the transcript to check
      * @returns <boolean> - whether the transcript matches the selected circuit
      */

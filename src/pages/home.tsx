@@ -25,10 +25,9 @@ import SpiralWire from '../assets/Isolation_Mode.png'
  * @returns <React.JSX.Element> - the Home page
  */
 export const Home = (): React.JSX.Element => {
-
     // the average data for the circuits
     const [averages, setAverages] = useState<IAvgStats>(emptyAverageStats)
-    // the circuits data 
+    // the circuits data
     const [circuits, setCircuits] = useState<ICircuit[]>([])
     // how many contributions
     const [totalContributions, setTotalContributions] = useState<number>(0)

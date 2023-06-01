@@ -1,4 +1,4 @@
-import { ITiming } from "./interfaces"
+import { ITiming } from './interfaces'
 
 /**
  * Truncate a string and put ... in the middle.

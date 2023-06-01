@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { GetStarted } from './pages/getStarted'
 
 /**
- * The main component for the app. 
+ * The main component for the app.
  * @returns <React.JSX.Element> - the App component
  */
 function App(): React.JSX.Element {

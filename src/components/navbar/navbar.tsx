@@ -6,7 +6,7 @@ import { getTotalNumberOfContributions } from '../../utils/fetchers'
 import { INavBarProps } from '../../utils/interfaces'
 
 /**
- * The Navigation bar for the app. 
+ * The Navigation bar for the app.
  * @param <INavBarProps> - the props for the NavBar component
  * @returns <React.JSX.Element> - the NavBar component
  */

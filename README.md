@@ -16,7 +16,7 @@ cd maci-phase2-setup && yarn
 
 ## 📜 Usage
 
-First copy the env-template and fill the .env file:
+First copy the env-template and fill the .env file
 
 ```bash
 cp .env-template .env
@@ -28,7 +28,7 @@ Build all the packages
 yarn build
 ```
 
-Then start locally:
+Then start locally
 
 ```bash
 yarn start
@@ -36,19 +36,19 @@ yarn start
 
 ## 🚀 Deploy to Firebase
 
-First change the project on `.firebaserc` to your project on Firebase:
+First change the project on `.firebaserc` to the name of your Firebase project
 
-```json 
+```json
 {
-  "projects": {
-    "default": "my-project"
-  }
+    "projects": {
+        "default": "my-project"
+    }
 }
 ```
 
-Then run:
+Then run
 
-```bash 
+```bash
 yarn deploy
 ```
 
@@ -66,16 +66,10 @@ Or to automatically lint the code
 yarn lint:fix
 ```
 
-Run [Prettier](https://prettier.io/) to check formatting rules
+Run [Prettier](https://prettier.io/) to format the code
 
 ```bash
-yarn prettier
-```
-
-Or to automatically format the code
-
-```bash
-yarn prettier:write
+yarn format
 ```
 
 ### ➕ Contributions

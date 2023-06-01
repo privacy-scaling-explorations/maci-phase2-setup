@@ -1,5 +1,5 @@
-import { getSecondsMinutesHoursFromMillis, timingToString } from "./formatting"
-import { IAvgStats, ILiveCeremonyData } from "./interfaces"
+import { getSecondsMinutesHoursFromMillis, timingToString } from './formatting'
+import { IAvgStats, ILiveCeremonyData } from './interfaces'
 
 // the ceremony ID (to be set in the .env file)
 export const MACI_CEREMONY_ID = process.env.REACT_APP_CEREMONY_ID || '0'

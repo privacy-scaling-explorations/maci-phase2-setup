@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction } from 'react'
 
 /**
  * @interface ICircuit
@@ -69,13 +69,13 @@ export interface ITranscript {
  * @member {string} contributionStep - the contribution step of the current contributor
  */
 export interface ILiveCeremonyData {
-    alive: boolean 
+    alive: boolean
     circuitSequence: number
-    currentContributor: string 
-    circuitName: string 
-    ETA: string 
-    timeSpent: string 
-    contributionStep: string 
+    currentContributor: string
+    circuitName: string
+    ETA: string
+    timeSpent: string
+    contributionStep: string
 }
 
 /**
