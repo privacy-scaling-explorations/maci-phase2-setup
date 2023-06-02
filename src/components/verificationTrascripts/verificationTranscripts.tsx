@@ -22,9 +22,11 @@ import {
     ModalHeader,
     ModalContent,
     ModalCloseButton,
-    ModalBody
+    ModalBody,
+    useToast
 } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { SearchBar } from '../searchBar/searchBar'
 import { ICircuit, ITranscript, IVerificationTranscriptProps } from '../../utils/interfaces'
 import {
@@ -95,14 +97,27 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
             setStartIndex(index * itemsPerPage - itemsPerPage)
         }
     }
+    
+    const toast = useToast()
 
     /**
      * Download a transcript as a text file
      * @param transcriptIndex <number> - the index of the transcript to download
      */
-    const download = (transcriptIndex: number) => {
+    const download = async (transcriptIndex: number) => {
         const transcript = transcripts[transcriptIndex]
-        const url = window.URL.createObjectURL(new Blob([transcript.content]))
+        const resp = await axios.get(transcript.url) 
+
+        if (resp.status !== 200) {
+            toast({
+                title: "Failed to download the verification transcript.",
+                position: "top-right",
+                status: "error"
+            })
+            return 
+        } 
+
+        const url = window.URL.createObjectURL(new Blob([resp.data]))
 
         const link = document.createElement('a')
         link.href = url

@@ -45,7 +45,6 @@ export interface IAvgStats {
  * @member {string} contributorId - the contributor id
  * @member {string} zKeyIndex - the zkey index
  * @member {string} url - the url of the transcript
- * @member {string} content - the content of the transcript
  * @member {string} circuitName - the circuit name
  * @member {string} contributionHash - the contribution hash
  */
@@ -53,7 +52,6 @@ export interface ITranscript {
     contributorId: string
     zKeyIndex: string
     url: string
-    content: string
     circuitName: string
     contributionHash: string
 }
