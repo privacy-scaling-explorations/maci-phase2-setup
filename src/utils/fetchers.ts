@@ -18,7 +18,7 @@ import {
 import { getSecondsMinutesHoursFromMillis, timingToString } from './formatting'
 
 let userFirestore: Firestore
-;(async () => {
+(async () => {
     const { firestoreDatabase } = await initializeFirebaseCoreServices(
         process.env.REACT_APP_FIREBASE_API_KEY!,
         process.env.REACT_APP_FIREBASE_AUTH_DOMAIN!,
@@ -120,6 +120,7 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
     for (const circuit of circuits) {
         const { id } = circuit
         const { name } = circuit.data
+
         const waitingQueue = await getUsersInWaitingQueue(id)
         const failedContributions = await getFailedContributions(id)
         const completedContributions = await getCircuitContributions(id)
@@ -346,12 +347,16 @@ export const getVerificationTranscript = async (
                 const resp = await axios.get(url)
                 if (resp.status === 200) content = resp.data
 
+                const circuitDoc = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+                const circuitData = circuitDoc.data()
+                if (!circuitData) return transcripts
+
                 const transcript: ITranscript = {
                     contributorId: identifier,
                     zKeyIndex: contributionData.zkeyIndex,
                     url: url,
                     content: content,
-                    circuitName: contributionData.files.lastZkeyFilename.split('_').at(0),
+                    circuitName: circuitData.name,
                     contributionHash: contributionHash
                 }
 
@@ -390,12 +395,16 @@ export const getVerificationTranscript = async (
             .filter((c: any) => c.doc === contribution.id)
             .at(0).hash
 
+        const circuitDoc = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+        const circuitData = circuitDoc.data()
+        if (!circuitData) return transcripts
+
         const transcript: ITranscript = {
             contributorId: contribution.data.participantId,
             zKeyIndex: identifier,
             url: url,
             content: content,
-            circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0),
+            circuitName: circuitData.name,
             contributionHash: contributionHash
         }
 

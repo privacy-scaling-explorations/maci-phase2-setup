@@ -300,66 +300,66 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
                                 borderColor={MaciBlack}>
                                 <Thead>
                                     <Tr>
-                                        <Tooltip label="The unique identifier of the contribution (sequential number).">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The unique identifier of the contribution (sequential number).">
                                                 Contribution index
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The unique identifier of the contributor">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The unique identifier of the contributor">
                                                 Contributor ID
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The name of the circuit">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
-                                                Circuit Name
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The hash of the contribution">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The name of the circuit">
+                                                    Circuit Name
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The hash of the contribution">
                                                 Contribution Hash
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="A text file hosted on S3 with the transcript of the contribution verification">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="A text file hosted on S3 with the transcript of the contribution verification">
                                                 Verification Transcript
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="Download the verification transcript as a text file">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="Download the verification transcript as a text file">
                                                 Download
-                                            </Th>
-                                        </Tooltip>
+                                            </Tooltip>
+                                        </Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
@@ -372,27 +372,30 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
                                                 return (
                                                     <Tr
                                                         cursor="pointer"
-                                                        onClick={() => onOpen(index)}
                                                         key={index}>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}>
                                                             <Text color={MaciBlack}>
                                                                 {transcript.zKeyIndex}
                                                             </Text>
                                                         </Td>
-                                                        <Td>
-                                                            <Text color={MaciBlack}>
-                                                                {getEllipsisTxt(
-                                                                    transcript.contributorId,
-                                                                    10
-                                                                )}
-                                                            </Text>
+                                                        <Td onClick={() => onOpen(index)}>
+                                                            <Tooltip label={transcript.contributorId}>
+                                                                <Text color={MaciBlack}>
+                                                                    {getEllipsisTxt(
+                                                                        transcript.contributorId,
+                                                                        10
+                                                                    )}
+                                                                </Text>
+                                                            </Tooltip>
                                                         </Td>
-                                                        <Td>
-                                                            <Text color={MaciBlack}>
-                                                                {transcript.circuitName}
-                                                            </Text>
+                                                        <Td onClick={() => onOpen(index)}>
+                                                            <Tooltip label={transcript.circuitName}>
+                                                                <Text color={MaciBlack}>
+                                                                    {transcript.circuitName.length > 16 ? getEllipsisTxt(transcript.circuitName, 10) : transcript.circuitName}
+                                                                </Text>
+                                                            </Tooltip>
                                                         </Td>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}>
                                                             <Text color={MaciBlack}>
                                                                 {getEllipsisTxt(
                                                                     transcript.contributionHash,
@@ -400,7 +403,7 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
                                                                 )}
                                                             </Text>
                                                         </Td>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}> 
                                                             <Text color={MaciBlack}>
                                                                 {getEllipsisTxt(transcript.url, 10)}
                                                             </Text>
@@ -418,7 +421,6 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
                                                                 width="100%"
                                                                 height="48px"
                                                                 onClick={() => download(index)}>
-                                                                {' '}
                                                                 Download
                                                             </Button>
                                                         </Td>
