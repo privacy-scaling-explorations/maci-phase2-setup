@@ -182,7 +182,7 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         avgContributionTime: timingToString(
             getSecondsMinutesHoursFromMillis(totalAvgContributionTime)
         ),
-        diskSpaceRequired: diskSpaceRequired.toString(),
+        diskSpaceRequired: diskSpaceRequired.toFixed(2).toString(),
         diskSpaceUnit: diskSpaceUnit
     }
 

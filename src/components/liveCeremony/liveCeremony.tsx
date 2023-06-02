@@ -1,4 +1,4 @@
-import { Stack, Text, Circle, Box, Button, Select } from '@chakra-ui/react'
+import { Stack, Text, Circle, Box, Button, Select, Tooltip } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
 import { ICircuit, ILiveCeremonyData } from '../../utils/interfaces'
@@ -240,15 +240,17 @@ export const LiveCeremony = (): React.JSX.Element => {
                                         alignSelf="stretch">
                                         Circuit name
                                     </Text>
-                                    <Text
-                                        fontFamily="Poppins"
-                                        lineHeight="1.29"
-                                        fontWeight="medium"
-                                        fontSize="20px"
-                                        color={MaciBlack}
-                                        alignSelf="stretch">
-                                        {liveCeremonyData.circuitName}
-                                    </Text>
+                                    <Tooltip label={liveCeremonyData.circuitName}>
+                                        <Text
+                                            fontFamily="Poppins"
+                                            lineHeight="1.29"
+                                            fontWeight="medium"
+                                            fontSize="20px"
+                                            color={MaciBlack}
+                                            alignSelf="stretch">
+                                            {liveCeremonyData.circuitName.length > 16 ? getEllipsisTxt(liveCeremonyData.circuitName, 6) : liveCeremonyData.circuitName}
+                                        </Text>
+                                    </Tooltip>
                                 </Stack>
                                 <Stack
                                     padding="18px"

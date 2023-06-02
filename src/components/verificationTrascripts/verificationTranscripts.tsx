@@ -473,7 +473,7 @@ export const VerificationTranscript = (props: IVerificationTranscriptProps): Rea
                             <Stack>
                                 <NumberInput
                                     min={1}
-                                    max={transcripts.length / itemsPerPage}
+                                    max={transcripts.length / itemsPerPage >= 1 ? transcripts.length / itemsPerPage : 1}
                                     borderRadius="5px"
                                     borderWidth="1px"
                                     borderColor={MaciBlack}
