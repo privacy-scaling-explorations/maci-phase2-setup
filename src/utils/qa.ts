@@ -1,9 +1,7 @@
-interface QA {
-    question: string
-    answer: string
-}
+import { IQA } from './interfaces'
 
-export const questionAndAnswers: QA[] = [
+// The questions and answers for the FAQ page
+export const questionAndAnswers: IQA[] = [
     {
         question: 'What is MACI?',
         answer: 'Minimum Anti-Collusion Infrastructure (MACI) is a base layer for bribery-resistant, secure, and private digital voting.'

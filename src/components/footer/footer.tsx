@@ -1,11 +1,16 @@
 import React from 'react'
 import { Stack, Text, Box } from '@chakra-ui/react'
 import { MaciBlack, MaciWhite, MaciYellow } from '../../utils/colors'
+import { Link } from 'react-router-dom'
+
 import FooterImg from '../../assets/footerimg.png'
 import GitcoinImg from '../../assets/gitcoin.svg'
 import CLRFundImg from '../../assets/clrfund.svg'
-import { Link } from 'react-router-dom'
 
+/**
+ * Renders the Footer component with all relevant links.
+ * @returns <React.JSX.Element> - the Footer component
+ */
 export const Footer = (): React.JSX.Element => (
     <Stack
         paddingX="100px"

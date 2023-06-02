@@ -7,6 +7,7 @@ import '@fontsource/poppins/200.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 
+// Extend the default Chakra theme to set the font to Poppins
 const theme = extendTheme({
     fonts: {
         heading: 'Poppins',

@@ -1,4 +1,8 @@
 import { Stack, Text, Box, Button, Circle } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { IAvgStats, ICircuit } from '../utils/interfaces'
+import { FAQ } from '../components/faq/faq'
 import { MaciBlack, MaciLightYellow, MaciWhite, MaciYellow } from '../utils/colors'
 import {
     getAllCircuitsInfo,
@@ -6,27 +10,31 @@ import {
     getCeremonyState,
     getTotalNumberOfContributions
 } from '../utils/fetchers'
-import { useEffect, useState } from 'react'
-import { IAvgStats, ICircuit } from '../utils/interfaces'
-import { FAQ } from '../components/faq/faq'
-import WireRope from '../assets/ropeYellow.png'
-import WireRopeBackground from '../assets/wire-rope1.png'
-import { Link } from 'react-router-dom'
-import Layer17 from '../assets/Layer_1-7.png'
-import SpriralGlassYellow from '../assets/Spiral_glass_yellow.png'
-import SpiralWire from '../assets/Isolation_Mode.png'
 import { NavBar } from '../components/navbar/navbar'
 import { VerificationTranscript } from '../components/verificationTrascripts/verificationTranscripts'
 import { emptyAverageStats } from '../utils/constants'
 
-export const Home = () => {
+import WireRope from '../assets/ropeYellow.png'
+import WireRopeBackground from '../assets/wire-rope1.png'
+import Layer17 from '../assets/Layer_1-7.png'
+import SpriralGlassYellow from '../assets/Spiral_glass_yellow.png'
+import SpiralWire from '../assets/Isolation_Mode.png'
 
-    // state variables
+/**
+ * The Home page for the app.
+ * @returns <React.JSX.Element> - the Home page
+ */
+export const Home = (): React.JSX.Element => {
+    // the average data for the circuits
     const [averages, setAverages] = useState<IAvgStats>(emptyAverageStats)
+    // the circuits data
     const [circuits, setCircuits] = useState<ICircuit[]>([])
+    // how many contributions
     const [totalContributions, setTotalContributions] = useState<number>(0)
+    // whether the ceremony is ongoing or not
     const [isCeremonyOngoing, setIsCeremonyOngoing] = useState<boolean>(false)
 
+    // fetch all the required data on mount
     useEffect(() => {
         const _getCircuits = async () => {
             const circuits = await getAllCircuitsInfo()

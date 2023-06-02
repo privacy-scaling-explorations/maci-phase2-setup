@@ -1,7 +1,6 @@
 import { MACI_CEREMONY_ID, bucketUrl, emptyAverageStats, emptyLiveCeremonyData } from './constants'
 import { IAvgStats, ICircuit, ILiveCeremonyData, ITranscript } from './interfaces'
 import { Firestore, where } from 'firebase/firestore'
-import axios from 'axios'
 import {
     formatZkeyIndex,
     convertBytesOrKbToGb,
@@ -31,7 +30,7 @@ let userFirestore: Firestore
 })()
 
 /**
- * Get the live ceremony data. 
+ * Get the live ceremony data.
  * @return <ILiveCeremonyData> - the live ceremony data.
  */
 export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCeremonyData> => {
@@ -40,7 +39,11 @@ export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCerem
     if (!status) return emptyLiveCeremonyData
 
     // get the circuit doc and its data
-    const circuit = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+    const circuit = await getDocumentById(
+        userFirestore,
+        getCircuitsCollectionPath(MACI_CEREMONY_ID),
+        circuitId
+    )
     const circuitData = circuit.data()
     if (!circuitData) return emptyLiveCeremonyData
 
@@ -51,35 +54,39 @@ export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCerem
     const contributionTime = await getAvgContributionTime(circuitId)
 
     // check if we have anyone currently contributing
-    const { currentContributor } = circuitData.waitingQueue 
+    const { currentContributor } = circuitData.waitingQueue
 
     // if there is no one contributing we return the data that we have so far
     // if there is, we calculate the rest of the values
-    if (!!currentContributor) {
-        const participantDoc = await getDocumentById(userFirestore, getParticipantsCollectionPath(MACI_CEREMONY_ID), currentContributor)
+    if (currentContributor) {
+        const participantDoc = await getDocumentById(
+            userFirestore,
+            getParticipantsCollectionPath(MACI_CEREMONY_ID),
+            currentContributor
+        )
         const participantData = participantDoc.data()
-        if (!participantData) return {
-            alive: status,
-            circuitSequence: sequencePosition,
-            currentContributor: 'None',
-            circuitName: name,
-            ETA: timingToString(getSecondsMinutesHoursFromMillis(0)),
-            timeSpent: timingToString(getSecondsMinutesHoursFromMillis(0)),
-            contributionStep: 'N/A'
-        }
-    
+        if (!participantData)
+            return {
+                alive: status,
+                circuitSequence: sequencePosition,
+                currentContributor: 'None',
+                circuitName: name,
+                ETA: timingToString(getSecondsMinutesHoursFromMillis(0)),
+                timeSpent: timingToString(getSecondsMinutesHoursFromMillis(0)),
+                contributionStep: 'N/A'
+            }
+
         const { contributionStep, contributionStartedAt } = participantData
-    
+
         const currentTime = new Date().valueOf()
         const endTime = contributionStartedAt + contributionTime
 
-    
-        // time left is current time - (when the contribution started + how long it 
+        // time left is current time - (when the contribution started + how long it
         // takes to contribute in average)
         const timeLeft = endTime > currentTime ? endTime - currentTime : 0
         // time spent is current time - when the contribution started
         const timeSpent = currentTime - contributionStartedAt
-    
+
         return {
             alive: status,
             circuitSequence: sequencePosition,
@@ -89,7 +96,7 @@ export const getLiveCeremonyData = async (circuitId: string): Promise<ILiveCerem
             timeSpent: timingToString(getSecondsMinutesHoursFromMillis(timeSpent)),
             contributionStep: contributionStep
         }
-    } else 
+    } else
         return {
             alive: status,
             circuitSequence: sequencePosition,
@@ -112,6 +119,7 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
     for (const circuit of circuits) {
         const { id } = circuit
         const { name } = circuit.data
+
         const waitingQueue = await getUsersInWaitingQueue(id)
         const failedContributions = await getFailedContributions(id)
         const completedContributions = await getCircuitContributions(id)
@@ -125,7 +133,9 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
             waitingQueue: waitingQueue,
             failedContributions: failedContributions,
             completedContributions: completedContributions,
-            avgContributionTime: timingToString(getSecondsMinutesHoursFromMillis(avgContributionTime)),
+            avgContributionTime: timingToString(
+                getSecondsMinutesHoursFromMillis(avgContributionTime)
+            ),
             diskSpaceRequired: diskSpaceRequired,
             currentContributor: currentContributor
         })
@@ -140,8 +150,7 @@ export const getAllCircuitsInfo = async (): Promise<ICircuit[]> => {
 export const getAverageData = async (): Promise<IAvgStats> => {
     const circuits = await getCeremonyCircuits(userFirestore, MACI_CEREMONY_ID)
 
-    if (circuits.length === 0)
-        return emptyAverageStats
+    if (circuits.length === 0) return emptyAverageStats
 
     let totalWaitingQueue = 0
     let totalFailedContributions = 0
@@ -170,8 +179,10 @@ export const getAverageData = async (): Promise<IAvgStats> => {
         waitingQueue: Math.round(totalWaitingQueue / circuits.length),
         failedContributions: totalFailedContributions,
         completedContributions: Math.round(totalCompletedContributions / circuits.length),
-        avgContributionTime: timingToString(getSecondsMinutesHoursFromMillis(totalAvgContributionTime)),
-        diskSpaceRequired: diskSpaceRequired.toString(),
+        avgContributionTime: timingToString(
+            getSecondsMinutesHoursFromMillis(totalAvgContributionTime)
+        ),
+        diskSpaceRequired: diskSpaceRequired.toFixed(2).toString(),
         diskSpaceUnit: diskSpaceUnit
     }
 
@@ -210,9 +221,7 @@ export const getFailedContributions = async (circuitId: string): Promise<number>
     if (!circuitData) return 0
 
     const { waitingQueue } = circuitData
-    return waitingQueue.failedContributions
-        ? waitingQueue.failedContributions
-        : 0
+    return waitingQueue.failedContributions ? waitingQueue.failedContributions : 0
 }
 
 /**
@@ -259,6 +268,7 @@ export const getNumberOfContributors = async (): Promise<number> => {
 
 /**
  * Retrieve the average contribution time
+ * @param circuitId <string> - the id of the circuit
  * @returns <Number> - the avg contribution time.
  */
 export const getAvgContributionTime = async (circuitId: string): Promise<number> => {
@@ -277,6 +287,7 @@ export const getAvgContributionTime = async (circuitId: string): Promise<number>
 
 /**
  * Retrieve the disk space required for the zKey
+ * @param circuitId <string> - the id of the circuit
  * @returns <Number> - the disk space required.
  */
 export const getDiskSpaceRequired = async (circuitId: string): Promise<number> => {
@@ -294,9 +305,9 @@ export const getDiskSpaceRequired = async (circuitId: string): Promise<number> =
 
 /**
  * Retreive a verification transcript
- * @param identifier - the identifier of the transcript
- * @param byId - whether the identifier is an id or a index
- * @param circuitId - the id of the circuit
+ * @param identifier <string> - the identifier of the transcript
+ * @param byId <boolean> - whether the identifier is an id or a index
+ * @param circuitId <string> - the id of the circuit
  * @returns <string> - the particular verification transcript.
  */
 export const getVerificationTranscript = async (
@@ -333,16 +344,15 @@ export const getVerificationTranscript = async (
                     .filter((c: any) => c.doc === contribution.id)
                     .at(0).hash
 
-                let content = ''
-                const resp = await axios.get(url)
-                if (resp.status === 200) content = resp.data
+                const circuitDoc = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+                const circuitData = circuitDoc.data()
+                if (!circuitData) return transcripts
 
                 const transcript: ITranscript = {
                     contributorId: identifier,
                     zKeyIndex: contributionData.zkeyIndex,
                     url: url,
-                    content: content,
-                    circuitName: contributionData.files.lastZkeyFilename.split('_').at(0),
+                    circuitName: circuitData.name,
                     contributionHash: contributionHash
                 }
 
@@ -363,10 +373,6 @@ export const getVerificationTranscript = async (
         const contribution = fromQueryToFirebaseDocumentInfo(doc.docs).at(0)!
         const url = `${bucketUrl}/${contribution.data.files.transcriptStoragePath}`
 
-        let content = ''
-        const resp = await axios.get(url)
-        if (resp.status === 200) content = resp.data
-
         const participantDoc = await getDocumentById(
             userFirestore,
             getParticipantsCollectionPath(MACI_CEREMONY_ID),
@@ -381,12 +387,15 @@ export const getVerificationTranscript = async (
             .filter((c: any) => c.doc === contribution.id)
             .at(0).hash
 
+        const circuitDoc = await getDocumentById(userFirestore, getCircuitsCollectionPath(MACI_CEREMONY_ID), circuitId)
+        const circuitData = circuitDoc.data()
+        if (!circuitData) return transcripts
+
         const transcript: ITranscript = {
             contributorId: contribution.data.participantId,
             zKeyIndex: identifier,
             url: url,
-            content: content,
-            circuitName: contribution.data.files.lastZkeyFilename.split('_').at(0),
+            circuitName: circuitData.name,
             contributionHash: contributionHash
         }
 
@@ -422,6 +431,7 @@ export const getAllVerificationTranscripts = async (): Promise<ITranscript[]> =>
 
 /**
  * Get the current contributor ID for a specific circuit
+ * @param circuitId <string> - the id of the circuit
  * @returns <number> - the current contributor ID.
  */
 export const getCurrentContributor = async (circuitId: string): Promise<string> => {

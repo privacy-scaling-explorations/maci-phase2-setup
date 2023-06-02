@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react'
+
 /**
  * @interface ICircuit
  * @member {string} id - the circuit id
@@ -43,7 +45,6 @@ export interface IAvgStats {
  * @member {string} contributorId - the contributor id
  * @member {string} zKeyIndex - the zkey index
  * @member {string} url - the url of the transcript
- * @member {string} content - the content of the transcript
  * @member {string} circuitName - the circuit name
  * @member {string} contributionHash - the contribution hash
  */
@@ -51,7 +52,6 @@ export interface ITranscript {
     contributorId: string
     zKeyIndex: string
     url: string
-    content: string
     circuitName: string
     contributionHash: string
 }
@@ -67,13 +67,13 @@ export interface ITranscript {
  * @member {string} contributionStep - the contribution step of the current contributor
  */
 export interface ILiveCeremonyData {
-    alive: boolean 
+    alive: boolean
     circuitSequence: number
-    currentContributor: string 
-    circuitName: string 
-    ETA: string 
-    timeSpent: string 
-    contributionStep: string 
+    currentContributor: string
+    circuitName: string
+    ETA: string
+    timeSpent: string
+    contributionStep: string
 }
 
 /**
@@ -88,4 +88,48 @@ export interface ITiming {
     minutes: number
     hours: number
     days: number
+}
+
+/**
+ * @interface INavBarProps
+ * @member {string} background - the background color of the NavBar
+ */
+export interface INavBarProps {
+    background: string
+}
+
+/**
+ * @interface ISearchBarProps - the props for the SearchBar component
+ * @member {string} placeholder - the placeholder text for the search bar
+ * @member {Dispatch<SetStateAction<string>>} setSearch - the function to set the search text
+ */
+export interface ISearchBarProps {
+    placeholder: string
+    setSearch: Dispatch<SetStateAction<string>>
+}
+
+/**
+ * @interface ITimestampBoxProps
+ * @member {Dispatch<SetStateAction<number>>} setTimestamp - a function which sets the timestamp
+ */
+export interface ITimestampBoxProps {
+    setTimestamp: Dispatch<SetStateAction<number>>
+}
+
+/**
+ * @interface IVerificationTranscriptProps
+ * @member {ICircuit[]} circuits - the circuits to display
+ */
+export interface IVerificationTranscriptProps {
+    circuits: ICircuit[]
+}
+
+/**
+ * @interface IQA
+ * @member {string} question - the question
+ * @member {string} answer - the answer
+ */
+export interface IQA {
+    question: string
+    answer: string
 }

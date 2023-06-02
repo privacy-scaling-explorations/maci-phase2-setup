@@ -11,7 +11,11 @@ import {
 import { questionAndAnswers } from '../../utils/qa'
 import { MaciBlack, MaciLightYellow, MaciWhite, MaciYellow } from '../../utils/colors'
 
-export const FAQ = () => (
+/**
+ * A React component which renders the FAQ section of the website.
+ * @returns <React.JSX.Element> - the FAQ component
+ */
+export const FAQ = (): React.JSX.Element => (
     <Stack
         padding="100px"
         direction="row"

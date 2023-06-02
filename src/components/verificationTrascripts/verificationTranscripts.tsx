@@ -22,10 +22,13 @@ import {
     ModalHeader,
     ModalContent,
     ModalCloseButton,
-    ModalBody
+    ModalBody,
+    useToast
 } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import { SearchBar } from '../searchBar/searchBar'
-import { ICircuit, ITranscript } from '../../utils/interfaces'
+import { ICircuit, ITranscript, IVerificationTranscriptProps } from '../../utils/interfaces'
 import {
     MaciBlack,
     MaciLightBase,
@@ -33,28 +36,45 @@ import {
     MaciWhite,
     MaciYellow
 } from '../../utils/colors'
-import React, { useEffect, useState } from 'react'
 import { getAllVerificationTranscripts } from '../../utils/fetchers'
 import { getEllipsisTxt } from '../../utils/formatting'
+
 import Layer17 from '../../assets/Layer_1-7.png'
 
-export const VerificationTranscript = (props: any): React.JSX.Element => {
+/**
+ * A component to display the verification transcripts in a table
+ * @param <IVerificationTranscriptProps> - the props for the VerificationTranscript component (see interfaces.tsx)
+ * @returns <React.JSX.Element> - the VerificationTranscript component
+ */
+export const VerificationTranscript = (props: IVerificationTranscriptProps): React.JSX.Element => {
     // how many items we show per page
-    const itemsPerPage = 6
-    const [transcripts, setTranscripts] = useState<ITranscript[]>([])
-    const [startIndex, setStartIndex] = useState<number>(0)
-    const [endIndex, setEndIndex] = useState<number>(itemsPerPage)
-    const [searchTerm, setSearchTerm] = useState<string>('')
-    const [selectedCircuit, setSelectedCircuit] = useState<string>('')
-    const [selectedIndex, setSelectedIndex] = useState<number>(0)
+    const itemsPerPage = 20
 
+    // all of the transcripts for the ceremony
+    const [transcripts, setTranscripts] = useState<ITranscript[]>([])
+    // the first index of the transcripts to show
+    const [startIndex, setStartIndex] = useState<number>(0)
+    // the last index of the transcripts to show
+    const [endIndex, setEndIndex] = useState<number>(itemsPerPage)
+    // the search term to filter transcripts by
+    const [searchTerm, setSearchTerm] = useState<string>('')
+    // the circuit to filter transcripts by
+    const [selectedCircuit, setSelectedCircuit] = useState<string>('')
+    // the index of the transcript to show in the modal
+    const [selectedIndex, setSelectedIndex] = useState<number>(0)
+    // whether the modal is open or not
     const [isOpen, setIsOpen] = useState<boolean>(false)
 
+    /**
+     * Set the index of the transcript and open the modal
+     * @param index <number> - the index of the transcript to show in the modal
+     */
     const onOpen = (index: number) => {
         setSelectedIndex(index)
         setIsOpen(true)
     }
 
+    // on mount, get all transcripts
     useEffect(() => {
         const _getTranscripts = async () => {
             const response = await getAllVerificationTranscripts()
@@ -64,7 +84,10 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         _getTranscripts().catch()
     }, [])
 
-    // change which items to show
+    /**
+     * Change the table view
+     * @param index <number> - the page index
+     */
     const paginate = (index: number) => {
         if (index === 1) {
             setStartIndex(0)
@@ -74,10 +97,27 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
             setStartIndex(index * itemsPerPage - itemsPerPage)
         }
     }
+    
+    const toast = useToast()
 
-    const download = (transcriptIndex: number) => {
+    /**
+     * Download a transcript as a text file
+     * @param transcriptIndex <number> - the index of the transcript to download
+     */
+    const download = async (transcriptIndex: number) => {
         const transcript = transcripts[transcriptIndex]
-        const url = window.URL.createObjectURL(new Blob([transcript.content]))
+        const resp = await axios.get(transcript.url) 
+
+        if (resp.status !== 200) {
+            toast({
+                title: "Failed to download the verification transcript.",
+                position: "top-right",
+                status: "error"
+            })
+            return 
+        } 
+
+        const url = window.URL.createObjectURL(new Blob([resp.data]))
 
         const link = document.createElement('a')
         link.href = url
@@ -90,12 +130,24 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
         document.body.removeChild(link)
     }
 
-    const checkByCircuit = (transcript: ITranscript) => {
+    /**
+     * The filter function to check whether a transcript should be shown
+     * based on the circuit name
+     * @param transcript <ITranscript> - the transcript to check
+     * @returns <boolean> - whether the transcript matches the selected circuit
+     */
+    const checkByCircuit = (transcript: ITranscript): boolean => {
         if (selectedCircuit === '') return true
         return transcript.circuitName === selectedCircuit
     }
 
-    const checkSearch = (transcript: ITranscript) => {
+    /**
+     * The filter function to check whether a transcript should be shown
+     * based on the search term
+     * @param transcript <ITranscript> - the transcript to check
+     * @returns <boolean> - whether the transcript matches the search term
+     */
+    const checkSearch = (transcript: ITranscript): boolean => {
         if (searchTerm === '') return true
         // if it's alphanumerical it's the zkey index
         if (searchTerm.match(/^[0-9]+$/)) {
@@ -263,66 +315,66 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
                                 borderColor={MaciBlack}>
                                 <Thead>
                                     <Tr>
-                                        <Tooltip label="The unique identifier of the contribution (sequential number).">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The unique identifier of the contribution (sequential number).">
                                                 Contribution index
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The unique identifier of the contributor">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The unique identifier of the contributor">
                                                 Contributor ID
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The name of the circuit">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
-                                                Circuit Name
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="The hash of the contribution">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The name of the circuit">
+                                                    Circuit Name
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="The hash of the contribution">
                                                 Contribution Hash
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="A text file hosted on S3 with the transcript of the contribution verification">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="A text file hosted on S3 with the transcript of the contribution verification">
                                                 Verification Transcript
-                                            </Th>
-                                        </Tooltip>
-                                        <Tooltip label="Download the verification transcript as a text file">
-                                            <Th
-                                                lineHeight="1.5"
-                                                fontWeight="bold"
-                                                fontSize="16px"
-                                                letterSpacing="0.02em"
-                                                color={MaciBlack}>
+                                            </Tooltip>
+                                        </Th>
+                                        <Th
+                                            lineHeight="1.5"
+                                            fontWeight="bold"
+                                            fontSize="16px"
+                                            letterSpacing="0.02em"
+                                            color={MaciBlack}>
+                                            <Tooltip label="Download the verification transcript as a text file">
                                                 Download
-                                            </Th>
-                                        </Tooltip>
+                                            </Tooltip>
+                                        </Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
@@ -335,27 +387,30 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
                                                 return (
                                                     <Tr
                                                         cursor="pointer"
-                                                        onClick={() => onOpen(index)}
                                                         key={index}>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}>
                                                             <Text color={MaciBlack}>
                                                                 {transcript.zKeyIndex}
                                                             </Text>
                                                         </Td>
-                                                        <Td>
-                                                            <Text color={MaciBlack}>
-                                                                {getEllipsisTxt(
-                                                                    transcript.contributorId,
-                                                                    10
-                                                                )}
-                                                            </Text>
+                                                        <Td onClick={() => onOpen(index)}>
+                                                            <Tooltip label={transcript.contributorId}>
+                                                                <Text color={MaciBlack}>
+                                                                    {getEllipsisTxt(
+                                                                        transcript.contributorId,
+                                                                        10
+                                                                    )}
+                                                                </Text>
+                                                            </Tooltip>
                                                         </Td>
-                                                        <Td>
-                                                            <Text color={MaciBlack}>
-                                                                {transcript.circuitName}
-                                                            </Text>
+                                                        <Td onClick={() => onOpen(index)}>
+                                                            <Tooltip label={transcript.circuitName}>
+                                                                <Text color={MaciBlack}>
+                                                                    {transcript.circuitName.length > 16 ? getEllipsisTxt(transcript.circuitName, 10) : transcript.circuitName}
+                                                                </Text>
+                                                            </Tooltip>
                                                         </Td>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}>
                                                             <Text color={MaciBlack}>
                                                                 {getEllipsisTxt(
                                                                     transcript.contributionHash,
@@ -363,7 +418,7 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
                                                                 )}
                                                             </Text>
                                                         </Td>
-                                                        <Td>
+                                                        <Td onClick={() => onOpen(index)}> 
                                                             <Text color={MaciBlack}>
                                                                 {getEllipsisTxt(transcript.url, 10)}
                                                             </Text>
@@ -381,7 +436,6 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
                                                                 width="100%"
                                                                 height="48px"
                                                                 onClick={() => download(index)}>
-                                                                {' '}
                                                                 Download
                                                             </Button>
                                                         </Td>
@@ -436,7 +490,7 @@ export const VerificationTranscript = (props: any): React.JSX.Element => {
                             <Stack>
                                 <NumberInput
                                     min={1}
-                                    max={transcripts.length / itemsPerPage}
+                                    max={transcripts.length / itemsPerPage >= 1 ? transcripts.length / itemsPerPage : 1}
                                     borderRadius="5px"
                                     borderWidth="1px"
                                     borderColor={MaciBlack}
